@@ -97,6 +97,8 @@ Project Root:
   └── ...
 ```
 
+![alt text](assets/setup.png)
+
 ---
 
 ## Directory Structure
@@ -495,6 +497,10 @@ Read register 18 = 0x04 (should be 0x04) ✓
 Monitor: Test HK SPI (RTL) Passed ✓✓✓
 ```
 
+![alt text](assets/RTL_PASS.png)
+![alt text](assets/RTL_PASS_2.png)
+![alt text](assets/RTL_WAVE.png)
+
 **Key Observations**:
 - ✅ All 19 register reads passed
 - ⚠️ Vrefcap unconnected warnings (expected—not used in functional sim)
@@ -538,6 +544,10 @@ Read register 18 = 0x04 (should be 0x04) ✓
 
 Monitor: Test HK SPI (GL) Passed ✓✓✓
 ```
+
+![alt text](assets/GL_PASSED.png)
+![alt text](assets/GL_PASSED_2.png)
+![alt text](assets/GLS_WAVE.png)
 
 ---
 
