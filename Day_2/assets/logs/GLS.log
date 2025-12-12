@@ -1,0 +1,869 @@
+[sshekhar@nanodc ~]$ git clone https://github.com/vsdip/vsdRiscvScl180.git
+Cloning into 'vsdRiscvScl180'...
+remote: Enumerating objects: 723, done.
+remote: Counting objects: 100% (723/723), done.
+remote: Compressing objects: 100% (529/529), done.
+remote: Total 723 (delta 202), reused 692 (delta 179), pack-reused 0 (from 0)
+Receiving objects: 100% (723/723), 26.30 MiB | 9.94 MiB/s, done.
+Resolving deltas: 100% (202/202), done.
+[sshekhar@nanodc ~]$ ls
+caravel  toolRC_iitgntapeout  vsdRiscvScl180
+[sshekhar@nanodc ~]$ cd vsdRiscvScl180/
+[sshekhar@nanodc vsdRiscvScl180]$ cd dv/hkspi/
+[sshekhar@nanodc hkspi]$ LS
+bash: LS: command not found...
+Similar command is: 'ls'
+[sshekhar@nanodc hkspi]$ ls
+APIs          hkspi.bin      irq_vex.h               start_caravel_ibex.s
+caravel.h     hkspi.c        isr.c                   start_caravel_vexriscv.s
+cpu_type.mak  hkspi.elf      linker_vex.ld           start_pico.S
+crt0_ibex.S   hkspi.hex      link_ibex.ld            start.S
+crt0_vex.S    hkspi_tb_gl.v  Makefile                stub.c
+csr-defs.h    hkspi_tb.v     sections.lds            system.h
+csr.h         hkspi.vcd      sections_vexriscv.lds   uart.h
+defs.h        hkspi.vvp      simple_system_common.c
+extraops.S    hw             simple_system_common.h
+generated     irq.h          simple_system_regs.h
+[sshekhar@nanodc hkspi]$ less Makefile 
+[sshekhar@nanodc hkspi]$ find /home -name "tsl18fs120_scl.v" 2>/dev/null
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model/tsl18fs120_scl.v
+[sshekhar@nanodc hkspi]$ find /home/Synopsys -name "tsl18fs120_scl.v" 2>/dev/null
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model/tsl18fs120_scl.v
+[sshekhar@nanodc hkspi]$ ls -la /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/
+total 0
+drwxr-xr-x. 9 risc_master risc_master 108 Dec 10 18:59 .
+drwxr-xr-x. 3 risc_master risc_master  81 Dec 10 19:00 ..
+drwxr-xr-x. 3 risc_master risc_master  18 Dec 10 18:59 digital_pnr_kit
+drwxr-xr-x. 2 risc_master risc_master 180 Dec 10 18:52 doc
+drwxr-xr-x. 6 risc_master risc_master 146 Dec 10 18:59 ext_str
+drwxr-xr-x. 5 risc_master risc_master 136 Dec 10 18:52 iopad
+drwxr-xr-x. 4 risc_master risc_master  32 Dec 10 18:59 memory
+drwxr-xr-x. 3 risc_master risc_master  18 Dec 10 18:52 pdk
+drwxr-xr-x. 4 risc_master risc_master  36 Dec 10 18:59 stdcell
+[sshekhar@nanodc hkspi]$ cd ../../
+[sshekhar@nanodc vsdRiscvScl180]$ ls
+digital_por.v  dv  gl  gls  images  readme.md  rtl  synthesis
+[sshekhar@nanodc vsdRiscvScl180]$ cd synthesis/output/
+[sshekhar@nanodc output]$ dc_shell -f ../synth.tcl
+bash: dc_shell: command not found...
+[sshekhar@nanodc output]$ ls
+vsdcaravel_synthesis.v
+[sshekhar@nanodc output]$ cd ..
+[sshekhar@nanodc synthesis]$ ls
+output  report  synth.tcl  vsdcaravel.sdc  work_folder
+[sshekhar@nanodc synthesis]$ cat synth.tcl 
+read_db "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/liberty/tsl18cio250_min.db"
+
+read_db "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/liberty/lib_flow_ff/tsl18fs120_scl_ff.db"
+
+
+set target_library "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/liberty/tsl18cio250_min.db /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/liberty/lib_flow_ff/tsl18fs120_scl_ff.db"
+
+set link_library {"* /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/liberty/tsl18cio250_min.db /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/liberty/lib_flow_ff/tsl18fs120_scl_ff.db"}
+
+set_app_var target_library $target_library
+set_app_var link_library $link_library
+
+
+
+set root_dir "/home/sshekhar/vsdRiscvScl180"
+set io_lib "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero"
+set verilog_files  "$root_dir/rtl"
+set top_module "vsdcaravel" ;
+set output_file "$root_dir/synthesis/output/vsdcaravel_synthesis.v"
+set report_dir "$root_dir/synthesis/report"
+read_file $verilog_files/defines.v
+read_file $io_lib -autoread -define USE_POWER_PINS -format verilog
+read_file $verilog_files/scl180_wrapper -autoread -define USE_POWER_PINS -format verilog
+read_file $verilog_files -autoread -define USE_POWER_PINS -format verilog -top $top_module
+read_sdc "$root_dir/synthesis/vsdcaravel.sdc"
+update_timing
+
+elaborate $top_module
+
+link
+#set_uniquify_design false;
+#set_flatten false
+
+compile
+report_qor > "$report_dir/qor_post_synth.rpt"
+report_area > "$report_dir/area_post_synth.rpt"
+report_power > "$report_dir/power_post_synth.rpt"
+
+
+write -format verilog -hierarchy -output $output_file
+
+
+
+ 
+
+
+
+
+[sshekhar@nanodc synthesis]$ cd output/
+[sshekhar@nanodc output]$ ls
+vsdcaravel_synthesis.v
+[sshekhar@nanodc output]$ dc_shell -f ../synth.tcl
+bash: dc_shell: command not found...
+[sshekhar@nanodc output]$ which dc_shell dc_shell-t dc_shell-xg-t
+/usr/bin/which: no dc_shell in (/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/sshekhar/.local/bin:/home/sshekhar/bin)
+/usr/bin/which: no dc_shell-t in (/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/sshekhar/.local/bin:/home/sshekhar/bin)
+/usr/bin/which: no dc_shell-xg-t in (/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/sshekhar/.local/bin:/home/sshekhar/bin)
+[sshekhar@nanodc output]$ echo $PATH | tr ':' '\n' | grep -i synopsys
+[sshekhar@nanodc output]$ env | grep -E "SNPS|SYNOPSYS|LM_LICENSE_FILE"
+[sshekhar@nanodc output]$ module avail 2>/dev/null | grep -i synopsys
+[sshekhar@nanodc output]$ module avail 2>/dev/null | grep -i dc
+[sshekhar@nanodc output]$ cd ../../
+[sshekhar@nanodc vsdRiscvScl180]$ cd gl
+[sshekhar@nanodc gl]$ cd ../gls
+[sshekhar@nanodc gls]$ ls
+hkspi.hex  hkspi_tb.v  hkspi.vvp  Makefile  spiflash.v  tbuart.v
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.hex *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+make: *** No rule to make target `hkspi.hex', needed by `hkspi.vvp'.  Stop.
+[sshekhar@nanodc gls]$ make SIM=gl
+make: *** No rule to make target `hkspi.hex', needed by `hkspi.vvp'.  Stop.
+[sshekhar@nanodc gls]$ cat Makefile 
+# SPDX-FileCopyrightText: 2020 Efabless Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# removing pdk path as everything has been included in one whole directory for this example.
+# PDK_PATH = $(PDK_ROOT)/$(PDK)
+scl_io_PATH = "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero"
+VERILOG_PATH = ../
+RTL_PATH = $(VERILOG_PATH)/gl
+BEHAVIOURAL_MODELS = ../gls
+RISCV_TYPE ?= rv32imc
+PDK_PATH= /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model 
+FIRMWARE_PATH = ../gls
+GCC_PATH?=/home/sshekhar/riscv-tools/bin
+GCC_PREFIX?=riscv32-unknown-elf
+
+SIM_DEFINES = -DFUNCTIONAL -DSIM
+
+SIM?=gl
+
+.SUFFIXES:
+
+PATTERN = hkspi
+
+vvp:  ${PATTERN:=.vvp}
+
+hex:  ${PATTERN:=.hex}
+
+vcd:  ${PATTERN:=.vcd}
+
+%.vvp: %_tb.v %.hex
+	iverilog -Ttyp $(SIM_DEFINES) -DGL -I $(VERILOG_PATH)/synthesis/output -I $(BEHAVIOURAL_MODELS) -I $(scl_io_PATH) \
+	-I $(PDK_PATH) -I $(VERILOG_PATH) -I $(RTL_PATH)   \
+	$< -o $@ 
+
+%.vcd: %.vvp
+	vvp $<
+
+%.elf: %.c $(FIRMWARE_PATH)/sections.lds $(FIRMWARE_PATH)/start.s
+	${GCC_PATH}/${GCC_PREFIX}-gcc -march=$(RISCV_TYPE) -mabi=ilp32 -Wl,-Bstatic,-T,$(FIRMWARE_PATH)/sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ $(FIRMWARE_PATH)/start.s $<
+
+%.hex: %.elf
+	${GCC_PATH}/${GCC_PREFIX}-objcopy -O verilog $< $@ 
+	# to fix flash base address
+	sed -i 's/@10000000/@00000000/g' $@
+
+%.bin: %.elf
+	${GCC_PATH}/${GCC_PREFIX}-objcopy -O binary $< /dev/stdout | tail -c +1048577 > $@
+
+check-env:
+#ifndef PDK_ROOT
+#	$(error PDK_ROOT is undefined, please export it before running make)
+#endif
+#ifeq (,$(wildcard $(PDK_ROOT)/$(PDK)))
+#	$(error $(PDK_ROOT)/$(PDK) not found, please install pdk before running make)
+#endif
+ifeq (,$(wildcard $(GCC_PATH)/$(GCC_PREFIX)-gcc ))
+	$(error $(GCC_PATH)/$(GCC_PREFIX)-gcc is not found, please export GCC_PATH and GCC_PREFIX before running make)
+endif
+# check for efabless style installation
+ifeq (,$(wildcard $(PDK_ROOT)/$(PDK)/libs.ref/*/verilog))
+#SIM_DEFINES := ${SIM_DEFINES} -DEF_STYLE
+endif
+# ---- Clean ----
+
+clean:
+	rm -f *.elf *.hex *.bin *.vcd *.log
+
+.PHONY: clean hex vvp vcd
+
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+make: *** No rule to make target `hkspi.hex', needed by `hkspi.vvp'.  Stop.
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make hkspi.hex
+cp ../dv/hkspi/hkspi.hex .
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ..//synthesis/output -I ../gls -I "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero" \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I ../ -I ..//gl   \
+hkspi_tb.v -o hkspi.vvp 
+..//synthesis/output/vsdcaravel_synthesis.v:8: error: malformed `include directive. Did you quote the file name?
+hkspi_tb.v:27: error: malformed `include directive. Extra junk on line?
+..//synthesis/output/vsdcaravel_synthesis.v:59345: error: Unknown module type: chip_io
+12 error(s) during elaboration.
+*** These modules were missing:
+        chip_io referenced 1 times.
+***
+make: *** [hkspi.vvp] Error 12
+[sshekhar@nanodc gls]$ cat Makefile 
+# SPDX-FileCopyrightText: 2020 Efabless Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# removing pdk path as everything has been included in one whole directory for this example.
+# PDK_PATH = $(PDK_ROOT)/$(PDK)
+scl_io_PATH = "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero"
+VERILOG_PATH = ../
+RTL_PATH = $(VERILOG_PATH)/gl
+BEHAVIOURAL_MODELS = ../gls
+RISCV_TYPE ?= rv32imc
+PDK_PATH= /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model 
+FIRMWARE_PATH = ../gls
+GCC_PATH?=/home/sshekhar/riscv-tools/bin
+GCC_PREFIX?=riscv32-unknown-elf
+
+SIM_DEFINES = -DFUNCTIONAL -DSIM
+
+SIM?=gl
+
+.SUFFIXES:
+
+PATTERN = hkspi
+
+vvp:  ${PATTERN:=.vvp}
+
+hex:  ${PATTERN:=.hex}
+
+vcd:  ${PATTERN:=.vcd}
+
+hkspi.hex:
+	cp ../dv/hkspi/hkspi.hex .
+
+%.vvp: %_tb.v %.hex
+	iverilog -Ttyp $(SIM_DEFINES) -DGL -I $(VERILOG_PATH)/synthesis/output -I $(BEHAVIOURAL_MODELS) -I $(scl_io_PATH) \
+	-I $(PDK_PATH) -I $(VERILOG_PATH) -I $(RTL_PATH)   \
+	$< -o $@ 
+
+%.vcd: %.vvp
+	vvp $<
+
+%.elf: %.c $(FIRMWARE_PATH)/sections.lds $(FIRMWARE_PATH)/start.s
+	${GCC_PATH}/${GCC_PREFIX}-gcc -march=$(RISCV_TYPE) -mabi=ilp32 -Wl,-Bstatic,-T,$(FIRMWARE_PATH)/sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ $(FIRMWARE_PATH)/start.s $<
+
+%.hex: %.elf
+	${GCC_PATH}/${GCC_PREFIX}-objcopy -O verilog $< $@ 
+	# to fix flash base address
+	sed -i 's/@10000000/@00000000/g' $@
+
+%.bin: %.elf
+	${GCC_PATH}/${GCC_PREFIX}-objcopy -O binary $< /dev/stdout | tail -c +1048577 > $@
+
+check-env:
+#ifndef PDK_ROOT
+#	$(error PDK_ROOT is undefined, please export it before running make)
+#endif
+#ifeq (,$(wildcard $(PDK_ROOT)/$(PDK)))
+#	$(error $(PDK_ROOT)/$(PDK) not found, please install pdk before running make)
+#endif
+ifeq (,$(wildcard $(GCC_PATH)/$(GCC_PREFIX)-gcc ))
+	$(error $(GCC_PATH)/$(GCC_PREFIX)-gcc is not found, please export GCC_PATH and GCC_PREFIX before running make)
+endif
+# check for efabless style installation
+ifeq (,$(wildcard $(PDK_ROOT)/$(PDK)/libs.ref/*/verilog))
+#SIM_DEFINES := ${SIM_DEFINES} -DEF_STYLE
+endif
+# ---- Clean ----
+
+clean:
+	rm -f *.elf *.bin *.vcd *.log
+
+.PHONY: clean hex vvp vcd
+
+[sshekhar@nanodc gls]$ cd ~/vsdRiscvScl180/gls
+[sshekhar@nanodc gls]$ nl -ba hkspi_tb.v | sed -n '20,35p'
+    20	
+    21	`timescale 1 ns / 1 ps
+    22	
+    23	`define USE_POWER_PINS
+    24	`include "defines.v"
+    25	//`include "__uprj_netlists.v"
+    26	`include "caravel_netlists.v"
+    27	`include "spiflash.v"
+    28	`include "tbuart.v"
+    29	
+    30	module hkspi_tb;
+    31		reg clock;
+    32		reg SDI, CSB, SCK, RSTB;
+    33		reg power1, power2;
+    34	
+    35		wire gpio;
+[sshekhar@nanodc gls]$ sed -n '20,35p' hkspi_tb.v | cat -A
+$
+`timescale 1 ns / 1 ps$
+$
+`define USE_POWER_PINS$
+`include "defines.v"$
+//`include "__uprj_netlists.v"$
+`include "caravel_netlists.v"$
+`include "spiflash.v"$
+`include "tbuart.v"$
+$
+module hkspi_tb;$
+^Ireg clock;$
+^Ireg SDI, CSB, SCK, RSTB;$
+^Ireg power1, power2;$
+$
+^Iwire gpio;$
+[sshekhar@nanodc gls]$ nl -ba ../synthesis/output/vsdcaravel_synthesis.v | sed -n '1,20p'
+     1	/////////////////////////////////////////////////////////////
+     2	// Created by: Synopsys DC Expert(TM) in wire load mode
+     3	// Version   : T-2022.03-SP5
+     4	// Date      : Wed Dec 10 19:59:16 2025
+     5	/////////////////////////////////////////////////////////////
+     6	
+     7	`include "dummy_por.v"
+     8	`include "RAM128.v
+     9	`include "housekeeping.v"
+    10	
+    11	module RAM128 ( CLK, EN0, VGND, VPWR, A0, Di0, Do0, WE0 );
+    12	  input [6:0] A0;
+    13	  input [31:0] Di0;
+    14	  output [31:0] Do0;
+    15	  input [3:0] WE0;
+    16	  input CLK, EN0, VGND, VPWR;
+    17	
+    18	
+    19	endmodule
+    20	
+[sshekhar@nanodc gls]$ sed -n '1,20p' ../synthesis/output/vsdcaravel_synthesis.v | cat -A
+/////////////////////////////////////////////////////////////$
+// Created by: Synopsys DC Expert(TM) in wire load mode$
+// Version   : T-2022.03-SP5$
+// Date      : Wed Dec 10 19:59:16 2025$
+/////////////////////////////////////////////////////////////$
+$
+`include "dummy_por.v"$
+`include "RAM128.v$
+`include "housekeeping.v"$
+$
+module RAM128 ( CLK, EN0, VGND, VPWR, A0, Di0, Do0, WE0 );$
+  input [6:0] A0;$
+  input [31:0] Di0;$
+  output [31:0] Do0;$
+  input [3:0] WE0;$
+  input CLK, EN0, VGND, VPWR;$
+$
+$
+endmodule$
+$
+[sshekhar@nanodc gls]$ nano hkspi_tb.v
+[sshekhar@nanodc gls]$ nano ../synthesis/output/vsdcaravel_synthesis.v
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make hkspi.hex 
+make: `hkspi.hex' is up to date.
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ..//synthesis/output -I ../gls -I "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero" -I ..//rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I ../ -I ..//gl   \
+hkspi_tb.v -o hkspi.vvp 
+..//rtl/caravel_netlists.v:33: Include file gl/digital_pll.v not found
+No top level modules, and no -s option.
+make: *** [hkspi.vvp] Error 1
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero" -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/caravel_netlists.v:33: Include file gl/digital_pll.v not found
+No top level modules, and no -s option.
+make: *** [hkspi.vvp] Error 1
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/caravel_netlists.v:33: Include file gl/digital_pll.v not found
+No top level modules, and no -s option.
+make: *** [hkspi.vvp] Error 1
+[sshekhar@nanodc gls]$ cat Makefile 
+# SPDX-FileCopyrightText: 2020 Efabless Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# removing pdk path as everything has been included in one whole directory for this example.
+# PDK_PATH = $(PDK_ROOT)/$(PDK)
+scl_io_PATH = /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero
+VERILOG_PATH = ..
+RTL_PATH = $(VERILOG_PATH)/gl
+BEHAVIOURAL_MODELS = ../gls
+RISCV_TYPE ?= rv32imc
+PDK_PATH= /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model 
+FIRMWARE_PATH = ../gls
+GCC_PATH?=/home/sshekhar/riscv-tools/bin
+GCC_PREFIX?=riscv32-unknown-elf
+
+SIM_DEFINES = -DFUNCTIONAL -DSIM
+
+SIM?=gl
+
+.SUFFIXES:
+
+PATTERN = hkspi
+
+vvp:  ${PATTERN:=.vvp}
+
+hex:  ${PATTERN:=.hex}
+
+vcd:  ${PATTERN:=.vcd}
+
+hkspi.hex:
+	cp ../dv/hkspi/hkspi.hex .
+
+%.vvp: %_tb.v %.hex
+	iverilog -Ttyp $(SIM_DEFINES) -DGL -I $(VERILOG_PATH)/synthesis/output -I $(BEHAVIOURAL_MODELS) -I $(scl_io_PATH) -I $(VERILOG_PATH)/rtl \
+	-I $(PDK_PATH) -I $(VERILOG_PATH) -I $(RTL_PATH)   \
+	$< -o $@ 
+
+%.vcd: %.vvp
+	vvp $<
+
+%.elf: %.c $(FIRMWARE_PATH)/sections.lds $(FIRMWARE_PATH)/start.s
+	${GCC_PATH}/${GCC_PREFIX}-gcc -march=$(RISCV_TYPE) -mabi=ilp32 -Wl,-Bstatic,-T,$(FIRMWARE_PATH)/sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ $(FIRMWARE_PATH)/start.s $<
+
+%.hex: %.elf
+	${GCC_PATH}/${GCC_PREFIX}-objcopy -O verilog $< $@ 
+	# to fix flash base address
+	sed -i 's/@10000000/@00000000/g' $@
+
+%.bin: %.elf
+	${GCC_PATH}/${GCC_PREFIX}-objcopy -O binary $< /dev/stdout | tail -c +1048577 > $@
+
+check-env:
+#ifndef PDK_ROOT
+#	$(error PDK_ROOT is undefined, please export it before running make)
+#endif
+#ifeq (,$(wildcard $(PDK_ROOT)/$(PDK)))
+#	$(error $(PDK_ROOT)/$(PDK) not found, please install pdk before running make)
+#endif
+ifeq (,$(wildcard $(GCC_PATH)/$(GCC_PREFIX)-gcc ))
+	$(error $(GCC_PATH)/$(GCC_PREFIX)-gcc is not found, please export GCC_PATH and GCC_PREFIX before running make)
+endif
+# check for efabless style installation
+ifeq (,$(wildcard $(PDK_ROOT)/$(PDK)/libs.ref/*/verilog))
+#SIM_DEFINES := ${SIM_DEFINES} -DEF_STYLE
+endif
+# ---- Clean ----
+
+clean:
+	rm -f *.elf *.bin *.vcd *.log
+
+.PHONY: clean hex vvp vcd
+
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make hkspi.hex 
+make: `hkspi.hex' is up to date.
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:8: error: malformed `include directive. Did you quote the file name?
+../synthesis/output/vsdcaravel_synthesis.v:9: error: malformed `include directive. Extra junk on line?
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+make: Nothing to be done for `vvp'.
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:8: error: malformed `include directive. Did you quote the file name?
+../gl/caravel_netlists.v:43: error: malformed `include directive. Extra junk on line?
+../synthesis/output/vsdcaravel_synthesis.v:59347: error: Unknown module type: chip_io
+12 error(s) during elaboration.
+*** These modules were missing:
+        chip_io referenced 1 times.
+***
+make: *** [hkspi.vvp] Error 12
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:21: Module RAM128 was already declared here: ../rtl/RAM128.v:1
+
+../synthesis/output/vsdcaravel_synthesis.v:43981: Module housekeeping was already declared here: ../rtl/housekeeping.v:58
+
+../rtl/chip_io.v:1217: Module chip_io was already declared here: ../rtl/chip_io.v:18
+
+make: *** [hkspi.vvp] Error 3
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/chip_io.v:1217: Module chip_io was already declared here: ../rtl/chip_io.v:18
+
+make: *** [hkspi.vvp] Error 1
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:21: Module RAM128 was already declared here: ../rtl/RAM128.v:1
+
+../synthesis/output/vsdcaravel_synthesis.v:43981: Module housekeeping was already declared here: ../rtl/housekeeping.v:58
+
+../rtl/chip_io.v:1217: Module chip_io was already declared here: ../rtl/chip_io.v:18
+
+make: *** [hkspi.vvp] Error 3
+[sshekhar@nanodc gls]$ grep -n "^module RAM128" ../synthesis/output/vsdcaravel_synthesis.v | head
+13:module RAM128 ( CLK, EN0, VGND, VPWR, A0, Di0, Do0, WE0 );
+[sshekhar@nanodc gls]$ grep -n "^module housekeeping[ (]" ../synthesis/output/vsdcaravel_synthesis.v | head
+38279:module housekeeping ( VPWR, VGND, wb_clk_i, wb_rstn_i, wb_adr_i, wb_dat_i, 
+[sshekhar@nanodc gls]$ grep -R "include \"chip_io.v\"" -n ../gl ../synthesis/output/vsdcaravel_synthesis.v
+../gl/caravel_netlists.v:43:	`include "chip_io.v"
+../gl/caravel_netlists.v:73:	`include "chip_io.v"
+../synthesis/output/vsdcaravel_synthesis.v:10:`include "chip_io.v"
+[sshekhar@nanodc gls]$ grep -R "include \"chip_io.v\"" -n ../gl ../synthesis/output/vsdcaravel_synthesis.v
+../gl/caravel_netlists.v:43:	//`include "chip_io.v"
+../gl/caravel_netlists.v:73:	`include "chip_io.v"
+../synthesis/output/vsdcaravel_synthesis.v:10://`include "chip_io.v"
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:21: Module RAM128 was already declared here: ../gl/RAM128.v:1
+
+../synthesis/output/vsdcaravel_synthesis.v:43981: Module housekeeping was already declared here: ../gl/housekeeping.v:59
+
+make: *** [hkspi.vvp] Error 2
+[sshekhar@nanodc gls]$ grep -n "^module RAM128" ../synthesis/output/vsdcaravel_synthesis.v | head
+13:module RAM128 ( CLK, EN0, VGND, VPWR, A0, Di0, Do0, WE0 );
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:43981: Module housekeeping was already declared here: ../gl/housekeeping.v:59
+
+make: *** [hkspi.vvp] Error 1
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../synthesis/output/vsdcaravel_synthesis.v:59348: error: Unknown module type: chip_io
+244 error(s) during elaboration.
+*** These modules were missing:
+        chip_io referenced 1 times.
+***
+make: *** [hkspi.vvp] Error 244
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/chip_io.v:1060: error: Unknown module type: constant_block
+../rtl/chip_io.v:1070: error: Unknown module type: pc3d01_wrapper
+../rtl/chip_io.v:1080: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1085: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1089: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1099: error: Unknown module type: pt3b02_wrapper
+../rtl/chip_io.v:1100: error: Unknown module type: pt3b02_wrapper
+../rtl/chip_io.v:1185: error: Unknown module type: mprj_io
+250 error(s) during elaboration.
+*** These modules were missing:
+        constant_block referenced 1 times.
+        mprj_io referenced 1 times.
+        pc3b03ed_wrapper referenced 3 times.
+        pc3d01_wrapper referenced 1 times.
+        pt3b02_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 250
+[sshekhar@nanodc gls]$ # open and delete/comment the whole "module RAM128 ... endmodule" block
+[sshekhar@nanodc gls]$ nano ../synthesis/output/vsdcaravel_synthesis.v
+[sshekhar@nanodc gls]$ grep -n "^module RAM128" ../synthesis/output/vsdcaravel_synthesis.v | head
+[sshekhar@nanodc gls]$ 
+[sshekhar@nanodc gls]$ grep -n "^module RAM128" ../synthesis/output/vsdcaravel_synthesis.v | head
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl -I ../rtl/scl180_wrapper \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/mprj_io_buffer.v:41: Module mprj_io_buffer was already declared here: ../synthesis/output/vsdcaravel_synthesis.v:43984
+
+../rtl/mprj_logic_high.v:33: Module mprj_logic_high was already declared here: ../synthesis/output/vsdcaravel_synthesis.v:34612
+
+../rtl/mprj2_logic_high.v:33: Module mprj2_logic_high was already declared here: ../synthesis/output/vsdcaravel_synthesis.v:35555
+
+make: *** [hkspi.vvp] Error 3
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl -I ../rtl/scl180_wrapper \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/chip_io.v:1070: error: Unknown module type: pc3d01_wrapper
+../rtl/chip_io.v:1080: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1085: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1089: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:70: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:74: error: Unknown module type: pc3b03ed_wrapper
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+256 error(s) during elaboration.
+*** These modules were missing:
+        dummy_scl180_conb_1 referenced 7 times.
+        pc3b03ed_wrapper referenced 5 times.
+        pc3d01_wrapper referenced 1 times.
+***
+[sshekhar@nanodc gls]$ ls ~/vsdRiscvScl180/rtl/scl180_wrapper
+pc3b03ed_wrapper.v  pc3d01_wrapper.v  pt3b02_wrapper.v
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl -I ../rtl/scl180_wrapper \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../synthesis/output/vsdcaravel_synthesis.v:59348: error: Unknown module type: chip_io
+../rtl/mprj_io.v:70: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:74: error: Unknown module type: pc3b03ed_wrapper
+322 error(s) during elaboration.
+*** These modules were missing:
+        chip_io referenced 1 times.
+        dummy_scl180_conb_1 referenced 1 times.
+        pc3b03ed_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 66
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl -I ../rtl/scl180_wrapper \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/chip_io.v:1070: error: Unknown module type: pc3d01_wrapper
+../rtl/chip_io.v:1080: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1085: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1089: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:70: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:74: error: Unknown module type: pc3b03ed_wrapper
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+256 error(s) during elaboration.
+*** These modules were missing:
+        dummy_scl180_conb_1 referenced 7 times.
+        pc3b03ed_wrapper referenced 5 times.
+        pc3d01_wrapper referenced 1 times.
+***
+[sshekhar@nanodc gls]$ make clean
+rm -f *.elf *.bin *.vcd *.log *.vvp
+[sshekhar@nanodc gls]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero -I ../gl -I ../rtl -I ../rtl/scl180_wrapper \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+../rtl/chip_io.v:1070: error: Unknown module type: pc3d01_wrapper
+../rtl/chip_io.v:1080: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1085: error: Unknown module type: pc3b03ed_wrapper
+../rtl/chip_io.v:1089: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:70: error: Unknown module type: pc3b03ed_wrapper
+../rtl/mprj_io.v:74: error: Unknown module type: pc3b03ed_wrapper
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+../rtl/constant_block.v:37: error: Unknown module type: dummy_scl180_conb_1
+256 error(s) during elaboration.
+*** These modules were missing:
+        dummy_scl180_conb_1 referenced 7 times.
+        pc3b03ed_wrapper referenced 5 times.
+        pc3d01_wrapper referenced 1 times.
+***
+[sshekhar@nanodc gls]$ make clean
+#rm -f *.elf *.hex *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+make: Nothing to be done for `vvp'.
+[sshekhar@nanodc gls]$ vvp hkspi.vcd
+hkspi.vcd:2: syntax error
+[sshekhar@nanodc gls]$ ls
+hkspi.hex  hkspi_tb.v  hkspi.vcd  hkspi.vvp  Makefile  spiflash.v  tbuart.v
+[sshekhar@nanodc gls]$ vvp hkspi.vvp
+Reading hkspi.hex
+hkspi.hex loaded into memory
+Memory 5 bytes = 0x93 0x00 0x00 0x00 0x93
+VCD info: dumpfile hkspi.vcd opened for output.
+Read data = 0x11 (should be 0x11)
+Read register 0 = 0x00 (should be 0x00)
+Read register 1 = 0x04 (should be 0x04)
+Read register 2 = 0x56 (should be 0x56)
+Read register 3 = 0x11 (should be 0x11)
+Read register 4 = 0x00 (should be 0x00)
+Read register 5 = 0x00 (should be 0x00)
+Read register 6 = 0x00 (should be 0x00)
+Read register 7 = 0x00 (should be 0x00)
+Read register 8 = 0x02 (should be 0x02)
+Read register 9 = 0x01 (should be 0x01)
+Read register 10 = 0x00 (should be 0x00)
+Read register 11 = 0x00 (should be 0x00)
+Read register 12 = 0x00 (should be 0x00)
+Read register 13 = 0xff (should be 0xff)
+Read register 14 = 0xef (should be 0xef)
+Read register 15 = 0xff (should be 0xff)
+Read register 16 = 0x03 (should be 0x03)
+Read register 17 = 0x12 (should be 0x12)
+Read register 18 = 0x04 (should be 0x04)
+Monitor: Test HK SPI (GL) Passed
+[sshekhar@nanodc gls]$ make clean
+#rm -f *.elf *.hex *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+make: Nothing to be done for `vvp'.
+[sshekhar@nanodc gls]$ make hkspi.hex
+make: Nothing to be done for `hkspi.hex'.
+[sshekhar@nanodc gls]$ make hkspi.hex
+make: *** No rule to make target `hkspi.hex'.  Stop.
+[sshekhar@nanodc gls]$ make
+make: *** No rule to make target `hkspi.hex', needed by `hkspi.vvp'.  Stop.
+[sshekhar@nanodc gls]$ make
+cp ../dv/hkspi/hkspi.hex 
+cp: missing destination file operand after ‘../dv/hkspi/hkspi.hex’
+Try 'cp --help' for more information.
+make: *** [hkspi.hex] Error 1
+[sshekhar@nanodc gls]$ make clean
+#rm -f *.elf *.hex *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+cp ../dv/hkspi/hkspi.hex 
+cp: missing destination file operand after ‘../dv/hkspi/hkspi.hex’
+Try 'cp --help' for more information.
+make: *** [hkspi.hex] Error 1
+[sshekhar@nanodc gls]$ make clean
+#rm -f *.elf *.hex *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+cp /home/sshekhar/vsdRiscvScl180/dv/hkspi/hkspi.hex 
+cp: missing destination file operand after ‘/home/sshekhar/vsdRiscvScl180/dv/hkspi/hkspi.hex’
+Try 'cp --help' for more information.
+make: *** [hkspi.hex] Error 1
+[sshekhar@nanodc gls]$ make clean
+#rm -f *.elf *.hex *.bin *.vcd *.log
+[sshekhar@nanodc gls]$ make
+cp /home/sshekhar/vsdRiscvScl180/dv/hkspi/hkspi.hex .
+iverilog -Ttyp -DFUNCTIONAL -DSIM -DGL -I ../synthesis/output -I ../gls -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero \
+-I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model  -I .. -I ../gl   \
+hkspi_tb.v -o hkspi.vvp 
+[sshekhar@nanodc gls]$ vvp hkspi.vvp 
+Reading hkspi.hex
+hkspi.hex loaded into memory
+Memory 5 bytes = 0x93 0x00 0x00 0x00 0x93
+VCD info: dumpfile hkspi.vcd opened for output.
+Read data = 0x11 (should be 0x11)
+Read register 0 = 0x00 (should be 0x00)
+Read register 1 = 0x04 (should be 0x04)
+Read register 2 = 0x56 (should be 0x56)
+Read register 3 = 0x11 (should be 0x11)
+Read register 4 = 0x00 (should be 0x00)
+Read register 5 = 0x00 (should be 0x00)
+Read register 6 = 0x00 (should be 0x00)
+Read register 7 = 0x00 (should be 0x00)
+Read register 8 = 0x02 (should be 0x02)
+Read register 9 = 0x01 (should be 0x01)
+Read register 10 = 0x00 (should be 0x00)
+Read register 11 = 0x00 (should be 0x00)
+Read register 12 = 0x00 (should be 0x00)
+Read register 13 = 0xff (should be 0xff)
+Read register 14 = 0xef (should be 0xef)
+Read register 15 = 0xff (should be 0xff)
+Read register 16 = 0x03 (should be 0x03)
+Read register 17 = 0x12 (should be 0x12)
+Read register 18 = 0x04 (should be 0x04)
+Monitor: Test HK SPI (GL) Passed
+[sshekhar@nanodc gls]$ gtwwave hkspi.vcd 
+bash: gtwwave: command not found...
+[sshekhar@nanodc gls]$ gtkwave hkspi.vcd
+
+GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+
+[0] start time.
+[52410000] end time.
+WM Destroy
+[sshekhar@nanodc gls]$ gtkwave hkspi.vcd hkspi_tb.v
+
+GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+
+[0] start time.
+[52410000] end time.
+WM Destroy
+[sshekhar@nanodc gls]$ 
+
