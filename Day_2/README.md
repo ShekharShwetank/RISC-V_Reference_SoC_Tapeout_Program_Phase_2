@@ -401,9 +401,9 @@ Read register 18 = 0x04 (should be 0x04) ✓
 
 Monitor: Test HK SPI (RTL) Passed ✓
 ```
-![alt text](assets/Screenshots/RTL_WAVE1.png)
-![alt text](assets/Screenshots/RTL_WAVE2.png)
-![alt text](assets/Screenshots/RTL_WAVE3.png)
+![alt text](assets/Screenshots/RTL_PASS1.png)
+![alt text](assets/Screenshots/RTL_PASS2.png)
+![alt text](assets/Screenshots/RTL_PASS3.png)
 
 **Result:** All 19 register read operations passed successfully.
 
