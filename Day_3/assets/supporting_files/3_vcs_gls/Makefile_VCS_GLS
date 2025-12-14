@@ -1,0 +1,64 @@
+#================================================================
+# VCS Gate-Level Simulation Makefile
+# Uses same approach as RTL simulation
+#================================================================
+
+# Paths (matching your RTL setup)
+SCL_STDCELL_PATH = /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model
+SCL_IOPAD_PATH = /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero
+SYNTH_PATH = ../task2_results/synthesis
+RTL_PATH = ../rtl
+WRAPPER_PATH = $(RTL_PATH)/scl180_wrapper
+
+# Defines
+DEFINES = +define+GL \
+          +define+FUNCTIONAL \
+          +define+SIM \
+          +define+UNIT_DELAY=#1 \
+          +define+USE_POWER_PINS
+
+# Include paths
+INCLUDES = -I$(SCL_STDCELL_PATH) \
+           -I$(SCL_IOPAD_PATH) \
+           -I$(SYNTH_PATH) \
+           -I$(RTL_PATH) \
+           -I$(WRAPPER_PATH) \
+           -I. -Igl
+
+# VCS flags (no Verdi, use VCD)
+VCS_FLAGS = -full64 \
+            -debug_access+all \
+            -timescale=1ns/1ps \
+            +notimingcheck
+
+# Files
+TB_FILE = hkspi_tb.v
+
+# Output
+SIMV = hkspi_gls.simv
+
+#================================================================
+# Targets
+#================================================================
+
+.PHONY: all compile simulate clean
+
+all: compile
+
+compile:
+	@echo "[VCS GLS] Compiling with VCS..."
+	vcs $(VCS_FLAGS) $(DEFINES) $(INCLUDES) \
+		$(TB_FILE) \
+		-o $(SIMV) | tee gls_compile.log
+	@echo "[VCS GLS] Compilation complete."
+
+simulate: $(SIMV)
+	@echo "[VCS GLS] Running simulation..."
+	./$(SIMV) | tee gls_simulation.log
+	@echo "[VCS GLS] Simulation complete."
+
+clean:
+	@echo "[VCS GLS] Cleaning..."
+	rm -rf csrc $(SIMV) $(SIMV).daidir *.log *.vcd *.vpd
+	rm -rf DVEfiles ucli.key AN.DB
+	@echo "[VCS GLS] Clean complete."
