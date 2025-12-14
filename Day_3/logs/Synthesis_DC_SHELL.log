@@ -11,7 +11,7 @@ SCL PDK flow setup with Cadence Virtuoso is complete
 
 Welcome to Synopsys Tool Suite
 
-[sshekhar@nanodc synthesis]$ dc_shell -f synth.tcl 
+[sshekhar@nanodc synthesis]$ dc_shell -topo -f synth.tcl 
 FlexNet Licensing checkout error: No such feature exists.
 Feature:       Synopsys-Release
 License path:  27020@c2s.cdacb.in:
@@ -547,7 +547,7 @@ Elapsed time for this session 59 seconds ( 0.02 hours ).
 Thank you...
 [sshekhar@nanodc synthesis]$ echo "removed the dummy_por.v file and running synthesis again"
 removed the dummy_por.v file and running synthesis again
-[sshekhar@nanodc synthesis]$ dc_shell -f synth.tcl
+[sshekhar@nanodc synthesis]$ dc_shell -topo -f synth.tcl
 FlexNet Licensing checkout error: No such feature exists.
 Feature:       Synopsys-Release
 License path:  27020@c2s.cdacb.in:

@@ -141,7 +141,8 @@ link
 #set_uniquify_design false;
 #set_flatten false
 
-#compile
+compile_ultra
+
 report_qor > "$report_dir/qor_post_synth.rpt"
 report_area > "$report_dir/area_post_synth.rpt"
 report_power > "$report_dir/power_post_synth.rpt"
@@ -150,7 +151,12 @@ report_power > "$report_dir/power_post_synth.rpt"
 write -format verilog -hierarchy -output $output_file
 ```
 
+```bash
+  dc_shell -topo -f synth.tcl | tee Synthesis_DC_SHELL.log
+```
+
 ![alt text](assets/SYNTHESIS_PASS.png)
+
 
 ## 6. GLS Flow (VCS) — Overview
 
