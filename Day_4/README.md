@@ -11,6 +11,9 @@ This submission presents a comprehensive, research-driven implementation of Task
 - ✅ VCS-based gate-level simulation validation
 - ✅ Comprehensive technical justification and documentation
 
+![alt text](assets/D_Main.png)
+![alt text](assets/D1.png)
+
 ---
 
 ## Table of Contents
@@ -48,14 +51,117 @@ Formally remove on-chip POR and prove—using design reasoning, pad analysis, sy
 
 ## Phase-1: POR Dependency Analysis
 
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          vsdcaravel.v (TOP)                                 │
+│                                                                             │
+│  External Pad: reset_n = resetb = rstb_h (Active-low, managed by testbench) │
+│       │                                                                     │
+│       ├───► caravel_core.v (.rstb_h)                                        │
+│       │       │                                                             │
+│       │       ├───► caravel_clocking.v (.rstb_h)                            │
+│       │       │       └───► Generates resetb_async                          │
+│       │       │                                                             │
+│       │       └───► housekeeping.v (.rstb_h)                                │
+│       │               └───► Controls flash SPI                              │
+│       │                                                                     │
+│       ├───► chip_io.v (.porb_h = rstb_h)                                    │
+│       │       └───► mprj_io.v (.porb_h)                                     │
+│       │               └───► Enables HV pads during reset                    │
+│       │                                                                     │
+│       └───► caravel.v (.porb_h = rstb_h)                                    │
+│               └───► __openframe_project_wrapper.v (.porb_h)                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+```
+
 ### 1. Study and Document Existing POR Usage
 
 **Analysis Results:** Complete audit of POR usage across the design hierarchy.
+
+- Check [por_instances.md](vsdRiscvScl180/Task3_Logs/por_instances.md) for detailed POR signal flow and module usage.
+
+```bash
+./caravel_openframe.v:130:    wire porb_h;
+./caravel_openframe.v:131:    wire porb_l;
+./caravel_openframe.v:132:    wire por_l;
+./caravel_openframe.v:193:	.porb_h(porb_h),
+./caravel_openframe.v:194:	.porb_l(porb_l),
+./caravel_openframe.v:195:	.por_l(por_l),
+./caravel_openframe.v:241:	.porb_h(porb_h),
+./caravel_openframe.v:242:	.porb_l(porb_l),
+./caravel_openframe.v:243:	.por_l(por_l),
+./dummy_por.v:20:module dummy_por(
+./dummy_por.v:27:    output porb_h,
+./dummy_por.v:28:    output porb_l,
+./dummy_por.v:29:    output por_l
+./dummy_por.v:76:	.X(porb_h)
+./dummy_por.v:80:    assign porb_l = porb_h;
+./dummy_por.v:83:    assign por_l = ~porb_l;
+./__openframe_project_wrapper.v:51:    input	 porb_h,	// power-on reset, sense inverted, 3.3V domain
+./__openframe_project_wrapper.v:52:    input	 porb_l,	// power-on reset, sense inverted, 1.8V domain
+./__openframe_project_wrapper.v:53:    input	 por_l,		// power-on reset, noninverted, 1.8V domain
+./__openframe_project_wrapper.v:120:	    .porb_h(porb_h),
+./__openframe_project_wrapper.v:121:	    .porb_l(porb_l),
+./__openframe_project_wrapper.v:122:	    .por_l(por_l),
+./caravel_core.v:63:    output porb_h,
+./caravel_core.v:64:    output por_l,
+./caravel_core.v:531:        .porb(porb_l),
+./caravel_core.v:594:        .porb(porb_l),
+./caravel_core.v:1385:    dummy_por por (
+./caravel_core.v:1392:		.porb_h(porb_h),
+./caravel_core.v:1393:		.porb_l(porb_l),
+./caravel_core.v:1394:		.por_l(por_l)
+./pads.v:87:		.ENABLE_H(porb_h), \
+./pads.v:89:		.ENABLE_VDDA_H(porb_h), \
+./pads.v:130:		.ENABLE_H(porb_h),	\
+./pads.v:132:		.ENABLE_VDDA_H(porb_h), \
+./pads.v:163:		.ENABLE_H(porb_h),	\
+./pads.v:165:		.ENABLE_VDDA_H(porb_h), \
+./pads.v:205:		.ENABLE_H(porb_h), \
+./pads.v:207:		.ENABLE_VDDA_H(porb_h), \
+./caravel_clocking.v:24:    input porb,		// Master (negative sense) reset from power-on-reset
+./caravel_netlists.v:28:    //`include "dummy_por.v"
+./caravel_netlists.v:95:    `include "dummy_por.v"
+./mgmt_core.v:83:	input wire por_l_in,
+./mgmt_core.v:84:	output wire por_l_out,
+./mgmt_core.v:85:	input wire porb_h_in,
+./mgmt_core.v:86:	output wire porb_h_out
+./mgmt_core.v:1828:assign por_l_out = por_l_in;
+./mgmt_core.v:1829:assign porb_h_out = porb_h_in;
+./caravel.v:175:  wire porb_h;
+./caravel.v:176:  wire porb_l;
+./caravel.v:177:  wire por_l;
+./caravel.v:254:      .porb_h(porb_h),
+./caravel.v:255:      .por(por_l),
+./caravel.v:312:      .porb_h(porb_h),
+./caravel.v:313:      .por_l(por_l),
+./mprj_io.v:40:    input porb_h,
+./mprj_io.v:86:	    .ENABLE_VDDA_H(porb_h),
+./mprj_io.v:117:	    .ENABLE_VDDA_H(porb_h),
+./chip_io.v:64:	input  porb_h,
+./chip_io.v:65:	input  por,
+./chip_io.v:112:    // and setting enh to porb_h.
+./chip_io.v:116:    assign mprj_io_enh = {`MPRJ_IO_PADS{porb_h}};
+./chip_io.v:778:  wire \mprj_pads.porb_h ;
+./chip_io.v:1122:		.ENABLE_H(porb_h),	 	  // Power-on-reset
+./chip_io.v:1199:		.porb_h(porb_h),
+./housekeeping.v:82:    input porb,
+./vsdcaravel.v:175:  wire porb_h;
+./vsdcaravel.v:176:  wire porb_l;
+./vsdcaravel.v:177:  wire por_l;
+./vsdcaravel.v:254:      .porb_h(porb_h),
+./vsdcaravel.v:255:      .por(por_l),
+./vsdcaravel.v:312:      .porb_h(porb_h),
+./vsdcaravel.v:313:      .por_l(por_l),
+```
 
 **POR Signal Inventory:**
 - `porb_h`: 3.3V domain active-low POR (from `dummy_por`)
 - `porb_l`: 1.8V domain active-low POR (from `dummy_por`)
 - `por_l`: 1.8V domain active-high POR (inverted `porb_l`)
+
+![alt text](assets/CHG5.png)
 
 **Key Findings:**
 - **64 instances** of POR-related code across **15 RTL files**
@@ -70,6 +176,13 @@ Formally remove on-chip POR and prove—using design reasoning, pad analysis, sy
 - All hierarchical wiring files
 
 **Deliverable:** [POR_Usage_Analysis.md](POR_Usage_Analysis.md)
+
+![alt text](assets/CHG1.png)
+![alt text](assets/CHG2.png)
+![alt text](assets/CHG3.png)
+![alt text](assets/CHG4.png)
+![alt text](assets/CHG5.png)
+![alt text](assets/CHG6.png)
 
 ### 2. PAD Library Study (Critical Analysis)
 
@@ -92,7 +205,7 @@ SCL-180 pads include integrated protection circuits that eliminate the POR depen
 - **Input Type:** Schmitt trigger (clean switching)
 - **Reset Pulse:** >1ms (external RC recommended)
 
-**Deliverable:** [PAD_Reset_Analysis.md](PAD_Reset_Analysis.md)
+**Deliverable:** [PAD_Reset_Analysis.md](Task_NoPOR_Final_GLS/PAD_Reset_Analysis.md)
 
 ---
 
@@ -142,6 +255,10 @@ SCL-180 pads include integrated protection circuits that eliminate the POR depen
 - All hierarchical connection files
 
 **Verification:**
+
+![alt text](assets/RTL_P2.png)
+![alt text](assets/RTL_W.png)
+
 - ✅ RTL compilation successful
 - ✅ VCS simulation passes
 - ✅ No POR references remaining
@@ -190,6 +307,12 @@ Module: RAM256
 - `vsdcaravel.sdc`: Timing constraints
 - Comprehensive reports (area, timing, power, QOR)
 
+![alt text](assets/SYNTH1.png)
+![alt text](assets/FLOW1.png)
+![alt text](assets/FLOW2.png)
+![alt text](assets/FLOW3.png)
+![alt text](assets/FLOW4.png)
+
 ---
 
 ## Phase-4: Final Gate-Level Simulation
@@ -228,6 +351,8 @@ Normal operation confirmed
 - `hkspi.vcd`: Value change dump for waveform analysis
 - Screenshots: Reset release and normal operation
 
+![alt text](assets/GL_P.png)
+![alt text](assets/GL_WAVE.png)
 ---
 
 ## Phase-5: Engineering Justification
@@ -261,7 +386,7 @@ Normal operation confirmed
 
 **Conclusion:** POR removal is the correct design decision for SCL-180.
 
-**Deliverable:** [POR_Removal_Justification.md](POR_Removal_Justification.md)
+**Deliverable:** [POR_Removal_Justification.md](Task_NoPOR_Final_GLS/POR_Removal_Justification.md)
 
 ---
 
@@ -349,10 +474,7 @@ This Task3 implementation demonstrates that SCL-180's advanced I/O pad architect
 
 ---
 
-**Submission Status:** ✅ COMPLETE
-**Deadline:** Tomorrow EOD
 **Tools Used:** VCS, DC_TOPO, SCL-180 PDK
-**Status:** Research-driven, industry-style implementation delivered
 
 ---
 
@@ -978,11 +1100,11 @@ read_file $verilog_files -top $top_module
 
 | Aspect | With Blackbox | Without Blackbox |
 |--------|---------------|------------------|
-| **Synthesis Time** | ⚡ Fast (skip memory synthesis) | 🐢 Slow (synthesize RAM as gates) |
-| **Timing** | ✅ Accurate (macro timing from PDK) | ❌ Inaccurate (gate timing mismatch) |
-| **Area** | ✅ Realistic (macro area) | ❌ Massive (unnecessary gates) |
-| **P&R Integration** | ✅ Easy (place macro directly) | ⚠️ Hard (convert back to macro) |
-| **Physical Design** | ✅ Matches real macro | ❌ Doesn't match silicon |
+| **Synthesis Time** | Fast (skip memory synthesis) | Slow (synthesize RAM as gates) |
+| **Timing** | Accurate (macro timing from PDK) | Inaccurate (gate timing mismatch) |
+| **Area** | Realistic (macro area) | Massive (unnecessary gates) |
+| **P&R Integration** | Easy (place macro directly) | Hard (convert back to macro) |
+| **Physical Design** | Matches real macro | Doesn't match silicon |
 
 **Conclusion:** Blackboxing is **industry standard** for embedded memories.
 
@@ -1197,7 +1319,7 @@ foreach file $all_rtl_files {
         lappend rtl_to_read $file
     }
 }
-read_file $rtl_to_read -define USE_POWER_PINS -format verilog
+read_file $rtl_to_read -define {USE_POWER_PINS CLK_DIV} -format verilog -top $top_module
 ```
 
 **Order is CRITICAL:**
@@ -1482,7 +1604,7 @@ grep "Monitor: Test HK SPI (GL) Passed" simulation_gls.log
 
 ---
 
-## Deliverables & Next Steps
+## Deliverables Summary
 
 ### Deliverables Checklist
 
@@ -1525,55 +1647,8 @@ synthesis/
 │   ├── constraints_post_synth.rpt
 │   ├── qor_post_synth.rpt
 │   └── blackbox_modules.rpt
-└── synthesis_task3.log                 [Execution log]
+└── synth_after_rst_fix.log                 [Execution log]
 ```
-
-### GitHub Submission
-
-```bash
-cd /home/sshekhar/vsdRiscvScl180
-
-git add rtl/                    # Updated RTL with reset_n
-git add synthesis/              # Synthesis script and results
-git add dv/                     # Updated testbenches
-git add Task3_README.md         # This documentation
-
-git commit -m "Task3: POR Removal & External Reset Implementation
-- Renamed resetb → reset_n across 15 RTL files (64 instances)
-- Implemented external active-low reset on SCL-180 I/O pad
-- Configured blackbox handling for RAM128, RAM256 memory macros
-- Verified with RTL simulation (HK SPI test PASSED)
-- Synthesized with DC_TOPO: netlist, DDC, and SDC generated
-- Gate-level simulation ready for validation
-- Complete technical documentation included"
-
-git push origin main
-```
-
-### Next Steps (For P&R Phase)
-
-1. **Obtain Memory Macros:**
-   - Get actual RAM128 and RAM256 .gds files from foundry
-   - Get timing libraries (.lib/.db)
-   - Get symbol definitions
-
-2. **Place-and-Route Setup:**
-   - Import vsdcaravel_synthesis.ddc into ICC2
-   - Link blackbox instances with actual macros
-   - Define power delivery network
-   - Plan tool hierarchy and memory placement
-
-3. **Physical Verification:**
-   - DRC (Design Rule Check) with SCL-180 rules
-   - LVS (Layout vs. Schematic) verification
-   - Timing sign-off with PrimeTime
-
-4. **Final Verification:**
-   - Extract layout parasitics (.spef)
-   - Re-run GLS with extracted timing
-   - Verify reset_n signal integrity
-   - Perform power analysis
-
 ---
 
 ## Appendix: Troubleshooting Guide
@@ -1662,7 +1737,7 @@ The external reset strategy using SCL-180 I/O pads is technically sound, and the
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** December 16, 2025  
-**Author:** Engineering Team (IIT Gandhinagar)  
-**Status:** ✅ COMPLETE
+**Document Version:** 2.0
+**Last Updated:** December 18, 2025  
+**Author:** Shwetank Shekhar
+**Status:** COMPLETE
