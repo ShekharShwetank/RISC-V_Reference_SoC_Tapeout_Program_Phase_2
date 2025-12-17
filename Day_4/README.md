@@ -430,50 +430,6 @@ Task_NoPOR_Final_GLS/
 
 ---
 
-## Evaluation Criteria Compliance
-
-### Area: Technical Correctness ✅
-- **POR Removal:** Complete elimination of `dummy_por` and all POR signals
-- **External Reset:** Single `reset_n` pin properly implemented
-- **Reset Distribution:** All sequential logic resets through external pin
-- **No Hidden POR:** Verified absence of POR assumptions
-
-### Area: PAD & Reset Reasoning ✅
-- **SCL-180 Analysis:** Comprehensive pad specification review
-- **SKY130 Comparison:** Clear technical contrast explaining differences
-- **Power Sequencing:** Detailed analysis of VDD ramp and reset timing
-- **Industry References:** Citations of PDK documentation and standards
-
-### Area: Clean Synthesis ✅
-- **DC_TOPO Success:** Error-free synthesis with SCL-180 libraries
-- **No Unresolved Nets:** All reset paths properly resolved
-- **Blackbox Correct:** RAM modules properly configured as blackboxes
-- **Timing Closure:** All constraints met with positive slack
-
-### Area: Clean GLS ✅
-- **VCS Simulation:** Successful GLS with SCL-180 functional models
-- **External Reset:** Reset driven from testbench (no internal generation)
-- **No X-Propagation:** Clean reset assertion and deassertion
-- **Functional Verification:** Equivalence with RTL behavior confirmed
-
-### Area: Documentation Clarity ✅
-- **Research-Driven:** Based on actual PDK analysis and industry practices
-- **Technical Depth:** Detailed explanations of why/how decisions made
-- **Complete Traceability:** All requirements addressed with evidence
-- **Industry Quality:** Professional documentation standards maintained
-
----
-
-## Conclusion
-
-This Task3 implementation demonstrates that SCL-180's advanced I/O pad architecture enables a superior external reset-only strategy that eliminates the need for on-chip POR circuits. The work validates this approach through comprehensive analysis, clean implementation, successful synthesis, and verified gate-level simulation.
-
-**Key Innovation:** Moving from behavioral POR models (unsynthesizable) to industry-standard external reset architecture (fully manufacturable).
-
-**Result:** A cleaner, more reliable, and synthesizable SoC design that follows modern ASIC methodologies.
-
----
-
 **Tools Used:** VCS, DC_TOPO, SCL-180 PDK
 
 ---
@@ -1537,9 +1493,9 @@ Synthesis Complete!
 # 1. Verify output files exist
 ls -lh output/
 # Expected:
-#   vsdcaravel_synthesis.v    (~5-10MB)
-#   vsdcaravel_synthesis.ddc  (~2-5MB)
-#   vsdcaravel_synthesis.sdc  (~50KB)
+#   vsdcaravel_synthesis.v
+#   vsdcaravel_synthesis.ddc
+#   vsdcaravel_synthesis.sdc 
 
 # 2. Verify blackbox preservation
 grep -c "module RAM128" output/vsdcaravel_synthesis.v
@@ -1603,32 +1559,6 @@ grep "Monitor: Test HK SPI (GL) Passed" simulation_gls.log
 ```
 
 ---
-
-## Deliverables Summary
-
-### Deliverables Checklist
-
-- [x] **RTL Refactoring**
-  - Renamed `resetb` → `reset_n` (64 instances, 15 files)
-  - Verified zero instances of old name remain
-  - RTL simulation passes with renamed signals
-
-- [x] **Synthesis**
-  - Generated memory_blackbox_stubs.v
-  - Successfully synthesized with DC_TOPO
-  - Produced vsdcaravel_synthesis.v netlist
-  - RAM128, RAM256 preserved as blackboxes
-
-- [x] **Verification**
-  - RTL simulation: ✓ PASSED
-  - Synthesis completion: ✓ OK
-  - Netlist generation: ✓ OK
-  - GLS ready (pending macro availability)
-
-- [x] **Documentation**
-  - This comprehensive README
-  - Detailed technical justification
-  - Error analysis and solutions
 
 ### Files Generated
 
@@ -1706,9 +1636,9 @@ Segmentation fault
 
 **Solutions:**
 1. Reduce design complexity: blackbox more modules
-2. Reduce optimization passes: use `-incremental` vs `-ultra`
+2. optimization passes: use `-incremental` with `compile_ultra`
 3. Increase system resources: more RAM, CPU
-4. Kill and restart: `pkill -9 dc_shell`
+4. **Kill and restart: `pkill -9 dc_shell`**
 
 ---
 
