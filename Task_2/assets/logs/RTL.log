@@ -1,0 +1,302 @@
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make 
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I ../..//rtl -I ../..//rtl/scl180_wrapper -I "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero"  \
+hkspi_tb.v -o hkspi.vvp 
+../..//rtl/chip_io.v:1099: error: Unknown module type: pt3b02_wrapper
+../..//rtl/chip_io.v:1100: error: Unknown module type: pt3b02_wrapper
+../..//rtl/pt3b02_wrapper.v:8: error: Unknown module type: pt3b02
+../..//rtl/pt3b02_wrapper.v:17: error: Unknown module type: pt3b02
+308 error(s) during elaboration.
+*** These modules were missing:
+        pt3b02 referenced 2 times.
+        pt3b02_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 52
+[sshekhar@nanodc hkspi]$ clear
+
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make 
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I ../..//rtl -I ../..//rtl/scl180_wrapper -I "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero"  \
+hkspi_tb.v -o hkspi.vvp 
+../..//rtl/chip_io.v:1099: error: Unknown module type: pt3b02_wrapper
+../..//rtl/chip_io.v:1100: error: Unknown module type: pt3b02_wrapper
+../..//rtl/pt3b02_wrapper.v:8: error: Unknown module type: pt3b02
+../..//rtl/pt3b02_wrapper.v:17: error: Unknown module type: pt3b02
+308 error(s) during elaboration.
+*** These modules were missing:
+        pt3b02 referenced 2 times.
+        pt3b02_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 52
+[sshekhar@nanodc hkspi]$ cd /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero
+[sshekhar@nanodc zero]$ head -20 pt3b02.v
+//////////////////////////////////////////////////////////////////
+//                                                              //
+// Copyright (c) 2003 Synopsys, Inc.  All Rights Reserved       //
+// This information is provided pursuant to a license agreement //
+// that grants limited rights of access/use and requires that   //
+// the information be treated as confidential.                  //
+//                                                              //
+//////////////////////////////////////////////////////////////////
+
+
+//  --    SYNOPSYS Verilog Models
+
+// 
+// Model type   	: zero timing
+// Filename     	: pt3b02.v
+// Description  	: 3V TTL I/O Buffer: 4mA DC Drive
+// Library      	: tsl18cio250
+// Programmer   	: chli
+// Product version	: Rev. main.1 
+// Master version	: Rev. main.4
+[sshekhar@nanodc zero]$ cd ~/vsdRiscvScl180/rtl
+[sshekhar@nanodc rtl]$ cat pt3b02_wrapper.v
+module pt3b02_wrapper_0 ( IN, PAD, OE_N );
+  input OE_N;
+  output IN;
+  inout PAD;
+
+  tri   PAD;
+
+  pt3b02 pad ( .I(1'b0), .OEN(OE_N), .PAD(PAD) );
+endmodule
+module pt3b02_wrapper_1 ( IN, PAD, OE_N );
+  input OE_N;
+  output IN;
+  inout PAD;
+
+  tri   PAD;
+
+  pt3b02 pad ( .I(1'b0), .OEN(OE_N), .PAD(PAD) );
+endmodule
+
+[sshekhar@nanodc rtl]$ cd ~/vsdRiscvScl180/dv/hkspi
+[sshekhar@nanodc hkspi]$ nano Makefile
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I ../..//rtl -I ../..//rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero  \
+hkspi_tb.v -o hkspi.vvp 
+../..//rtl/chip_io.v:1099: error: Unknown module type: pt3b02_wrapper
+../..//rtl/chip_io.v:1100: error: Unknown module type: pt3b02_wrapper
+../..//rtl/pt3b02_wrapper.v:8: error: Unknown module type: pt3b02
+../..//rtl/pt3b02_wrapper.v:17: error: Unknown module type: pt3b02
+308 error(s) during elaboration.
+*** These modules were missing:
+        pt3b02 referenced 2 times.
+        pt3b02_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 52
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make -n
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I ../..//rtl -I ../..//rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero  \
+hkspi_tb.v -o hkspi.vvp 
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I /home/sshekhar/vsdRiscvScl180//rtl -I /home/sshekhar/vsdRiscvScl180//rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero \
+ /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/*.v \
+hkspi_tb.v -o hkspi.vvp
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pc3b03ed.v:68: Module pc3b03ed was already declared here: /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pc3b03ed.v:37
+
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pc3d21.v:54: Module pc3d21 was already declared here: /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pc3d21.v:37
+
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pc3d01.v:54: Module pc3d01 was already declared here: /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pc3d01.v:37
+
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:20580: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:20598: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:20618: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21063: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21094: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21143: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21205: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21267: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21330: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21388: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21436: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21483: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21533: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21588: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21650: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21695: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:21742: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22145: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22181: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22209: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22240: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22273: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22297: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22328: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22361: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22413: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22447: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22499: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22533: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22575: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22595: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22638: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22725: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22752: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22774: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22809: UDP primitive already exists.
+/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v:22867: UDP primitive already exists.
+make: *** [hkspi.vvp] Error 40
+[sshekhar@nanodc hkspi]$ cd ~/vsdRiscvScl180
+[sshekhar@nanodc vsdRiscvScl180]$ grep -r "include.*tsl18fs120_scl.v" rtl/
+rtl/ring_osc2x13.v:`include "/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v"
+[sshekhar@nanodc vsdRiscvScl180]$ cd ~/vsdRiscvScl180/dv/hkspi
+[sshekhar@nanodc hkspi]$ nano Makefile
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I /home/sshekhar/vsdRiscvScl180//rtl -I /home/sshekhar/vsdRiscvScl180//rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero \
+ /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pt3b02.v \
+hkspi_tb.v -o hkspi.vvp
+/home/sshekhar/vsdRiscvScl180//rtl/chip_io.v:1099: error: Unknown module type: pt3b02_wrapper
+/home/sshekhar/vsdRiscvScl180//rtl/chip_io.v:1100: error: Unknown module type: pt3b02_wrapper
+306 error(s) during elaboration.
+*** These modules were missing:
+        pt3b02_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 50
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I /home/sshekhar/vsdRiscvScl180//rtl -I /home/sshekhar/vsdRiscvScl180//rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero \
+ /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pt3b02.v \
+ /home/sshekhar/vsdRiscvScl180//rtl/pt3b02_wrapper.v \
+hkspi_tb.v -o hkspi.vvp
+/home/sshekhar/vsdRiscvScl180//rtl/pt3b02_wrapper.v:9: Module pt3b02_wrapper_0 was already declared here: /home/sshekhar/vsdRiscvScl180//rtl/pt3b02_wrapper.v:1
+
+/home/sshekhar/vsdRiscvScl180//rtl/pt3b02_wrapper.v:18: Module pt3b02_wrapper_1 was already declared here: /home/sshekhar/vsdRiscvScl180//rtl/pt3b02_wrapper.v:10
+
+make: *** [hkspi.vvp] Error 2
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I /home/sshekhar/vsdRiscvScl180/rtl -I /home/sshekhar/vsdRiscvScl180/rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero \
+ /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pt3b02.v \
+ /home/sshekhar/vsdRiscvScl180/rtl/pt3b02_wrapper.v \
+hkspi_tb.v -o hkspi.vvp
+/home/sshekhar/vsdRiscvScl180/rtl/pt3b02_wrapper.v:9: Module pt3b02_wrapper_0 was already declared here: /home/sshekhar/vsdRiscvScl180/rtl/pt3b02_wrapper.v:1
+
+/home/sshekhar/vsdRiscvScl180/rtl/pt3b02_wrapper.v:18: Module pt3b02_wrapper_1 was already declared here: /home/sshekhar/vsdRiscvScl180/rtl/pt3b02_wrapper.v:10
+
+make: *** [hkspi.vvp] Error 2
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I /home/sshekhar/vsdRiscvScl180/rtl -I /home/sshekhar/vsdRiscvScl180/rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero \
+ /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pt3b02.v \
+hkspi_tb.v -o hkspi.vvp
+/home/sshekhar/vsdRiscvScl180/rtl/chip_io.v:1099: error: Unknown module type: pt3b02_wrapper
+/home/sshekhar/vsdRiscvScl180/rtl/chip_io.v:1100: error: Unknown module type: pt3b02_wrapper
+306 error(s) during elaboration.
+*** These modules were missing:
+        pt3b02_wrapper referenced 2 times.
+***
+make: *** [hkspi.vvp] Error 50
+[sshekhar@nanodc hkspi]$ head -30 hkspi_tb.v | grep include
+`include "__uprj_netlists.v"
+`include "caravel_netlists.v"
+`include "spiflash.v"
+`include "tbuart.v"
+[sshekhar@nanodc hkspi]$ head -30 hkspi_tb.v | grep include
+`include "__uprj_netlists.v"
+`include "caravel_netlists.v"
+`include "spiflash.v"
+`include "tbuart.v"
+[sshekhar@nanodc hkspi]$ cat ../__uprj_netlists.v
+cat: ../__uprj_netlists.v: No such file or directory
+[sshekhar@nanodc hkspi]$ cat ../caravel_netlists.v | head -50
+cat: ../caravel_netlists.v: No such file or directory
+[sshekhar@nanodc hkspi]$ cd ~/vsdRiscvScl180/rtl
+[sshekhar@nanodc rtl]$ ls *.v
+buff_flash_clkrst.v       empty_macro.v                  picorv32.v
+caravel_clocking.v        gpio_control_block.v           primitives.v
+caravel_core.v            gpio_defaults_block.v          pt3b02_wrapper.v
+caravel_logo.v            gpio_logic_high.v              RAM128.v
+caravel_motto.v           gpio_signal_buffering_alt.v    RAM256.v
+caravel_netlists.v        gpio_signal_buffering.v        ring_osc2x13.v
+caravel_openframe.v       housekeeping_spi.v             scl180_macro_sparecell.v
+caravel_power_routing.v   housekeeping.v                 simple_por.v
+caravel.v                 ibex_all.v                     spare_logic_block.v
+chip_io.v                 manual_power_connections.v     spiflash.v
+clock_div.v               mgmt_core.v                    __uprj_netlists.v
+constant_block.v          mgmt_core_wrapper.v            __user_analog_project_wrapper.v
+copyright_block_a.v       mgmt_protect_hv.v              user_defines.v
+copyright_block.v         mgmt_protect.v                 user_id_programming.v
+debug_regs.v              mprj2_logic_high.v             user_id_textblock.v
+defines.v                 mprj_io_buffer.v               __user_project_gpio_example.v
+digital_pll_controller.v  mprj_io.v                      __user_project_la_example.v
+digital_pll.v             mprj_logic_high.v              __user_project_wrapper.v
+dummy_por.v               __openframe_project_wrapper.v  VexRiscv_MinDebugCache.v
+dummy_schmittbuf.v        open_source.v                  vsdcaravel.v
+dummy_scl180_conb_1.v     pads.v                         xres_buf.v
+[sshekhar@nanodc rtl]$ cd ~/vsdRiscvScl180/dv/hkspi
+[sshekhar@nanodc hkspi]$ make clean
+rm -f *.vcd *.log *.vvp
+[sshekhar@nanodc hkspi]$ MAKE
+bash: MAKE: command not found...
+Similar command is: 'make'
+[sshekhar@nanodc hkspi]$ make
+iverilog -Ttyp -DFUNCTIONAL -DSIM -I ../  \
+ -I /home/sshekhar/vsdRiscvScl180/rtl -I /home/sshekhar/vsdRiscvScl180/rtl/scl180_wrapper -I /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero \
+ /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/6M1L/verilog/tsl18cio250/zero/pt3b02.v \
+hkspi_tb.v -o hkspi.vvp
+[sshekhar@nanodc hkspi]$ ls
+APIs          csr.h       hkspi.elf      irq.h          sections.lds            start_caravel_vexriscv.s
+caravel.h     defs.h      hkspi.hex      irq_vex.h      sections_vexriscv.lds   start_pico.S
+cpu_type.mak  extraops.S  hkspi_tb_gl.v  isr.c          simple_system_common.c  start.S
+crt0_ibex.S   generated   hkspi_tb.v     linker_vex.ld  simple_system_common.h  stub.c
+crt0_vex.S    hkspi.bin   hkspi.vvp      link_ibex.ld   simple_system_regs.h    system.h
+csr-defs.h    hkspi.c     hw             Makefile       start_caravel_ibex.s    uart.h
+[sshekhar@nanodc hkspi]$ vvp hkspi.vvp
+Reading hkspi.hex
+hkspi.hex loaded into memory
+Memory 5 bytes = 0x93 0x00 0x00 0x00 0x93
+VCD info: dumpfile hkspi.vcd opened for output.
+Read data = 0x11 (should be 0x11)
+Read register 0 = 0x00 (should be 0x00)
+Read register 1 = 0x04 (should be 0x04)
+Read register 2 = 0x56 (should be 0x56)
+Read register 3 = 0x11 (should be 0x11)
+Read register 4 = 0x00 (should be 0x00)
+Read register 5 = 0x00 (should be 0x00)
+Read register 6 = 0x00 (should be 0x00)
+Read register 7 = 0x00 (should be 0x00)
+Read register 8 = 0x02 (should be 0x02)
+Read register 9 = 0x01 (should be 0x01)
+Read register 10 = 0x00 (should be 0x00)
+Read register 11 = 0x00 (should be 0x00)
+Read register 12 = 0x00 (should be 0x00)
+Read register 13 = 0xff (should be 0xff)
+Read register 14 = 0xef (should be 0xef)
+Read register 15 = 0xff (should be 0xff)
+Read register 16 = 0x03 (should be 0x03)
+Read register 17 = 0x12 (should be 0x12)
+Read register 18 = 0x04 (should be 0x04)
+Monitor: Test HK SPI (RTL) Passed
+[sshekhar@nanodc hkspi]$ gtkwave hkspi.vcd hkspi_tb.v
+
+GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+
+[0] start time.
+[52410000] end time.
+GTKWAVE | Select one or more traces.
+WM Destroy
+[sshekhar@nanodc hkspi]$ 
+

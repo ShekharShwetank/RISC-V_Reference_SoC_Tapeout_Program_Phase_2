@@ -1,0 +1,30 @@
+# ============================================================
+# Synopsys VCS RTL Simulation Makefile (Task 2 - 4M1L)
+# ============================================================
+
+WORK_ROOT = /home/sshekhar/vsdRiscvScl180
+RTL_PATH = $(WORK_ROOT)/rtl
+IO_PATH = /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero
+WRAPPER_PATH = $(RTL_PATH)/scl180_wrapper
+TOP_MODULE = hkspi_tb
+PATTERN = hkspi
+
+VCS_FLAGS = -full64 -sverilog -debug_all +define+FUNCTIONAL +define+SIM +incdir+$(RTL_PATH) +incdir+$(WRAPPER_PATH) +incdir+$(IO_PATH) -timescale=1ns/1ps
+
+# All required I/O pad cells from SCL180 PDK
+PAD_CELLS = $(IO_PATH)/pt3b02.v $(IO_PATH)/pc3d01.v $(IO_PATH)/pc3b03ed.v $(IO_PATH)/pc3d21.v
+
+compile: $(TOP_MODULE).simv
+
+$(TOP_MODULE).simv: $(PATTERN).hex
+	@echo "[VCS RTL] Compiling with all SCL180 pad cells..."
+	vcs $(VCS_FLAGS) $(PAD_CELLS) $(RTL_PATH)/defines.v $(RTL_PATH)/user_defines.v $(WRAPPER_PATH)/pt3b02_wrapper.v $(WRAPPER_PATH)/pc3d01_wrapper.v $(WRAPPER_PATH)/pc3b03ed_wrapper.v $(RTL_PATH)/*.v $(PATTERN)_tb.v -top $(TOP_MODULE) -o $@
+
+simulate: $(TOP_MODULE).simv
+	@echo "[VCS RTL] Running simulation..."
+	./$(TOP_MODULE).simv +fsdbfile+hkspi_rtl.fsdb
+
+clean:
+	rm -rf *.simv* csrc simv.daidir *.fsdb *.log *.key AN.DB
+
+.PHONY: compile simulate clean
