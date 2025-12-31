@@ -10,6 +10,7 @@
 simv                           # Compiled simulator executable
 simv.daidir/                   # VCS simulator database
 csrc/                          # VCS C source compilation directory
+**/csrc/                       # Recursive VCS C source directories
 DVEfiles/                      # DVE (Waveform viewer) files
 *.vpd                          # VCS waveform database
 *.vcd                          # VCD waveform files
@@ -19,6 +20,38 @@ ucli.key                       # VCS key file
 *.key                          # VCS license keys
 verdiLog/                      # Verdi debug logs
 novas.*/                       # Novas waveform viewer files
+
+# VCS COMPILATION ARTIFACTS (Large generated files)
+**/*.o                         # Object files from C compilation
+**/*.a                         # Static archives from linking
+**/*.so                        # Shared objects (compiled libraries)
+**/archive.*/                  # Archive directories
+**/objs/                       # Object file directories
+**/udps/                       # UDP (user-defined primitives) compiled files
+**/*.sdb                       # VCS SDB database files
+**/*.kdb                       # VCS KDB database files
+**/product_timestamp           # VCS product timestamp
+**/rmapats.dat                 # RMAPs data
+**/hsim/                       # HSIM simulation directories
+**/debug_dump/                 # Debug dump directories
+**/cc/                         # C compiler directories
+**/.daidir_complete            # DAI completion markers
+**/.normal_done                # Normal done markers
+**/.vcs.timestamp              # VCS timestamps
+**/cginfo.json                 # Code generation info
+**/cgproc.*.json               # Code generation process files
+**/cgincr.sdb                  # Code generation increment
+**/*.compview.txt              # Compilation view
+**/filelist*                   # VCS file lists
+**/Makefile.hsopt              # HSOPT makefiles
+**/SIM_l.o                     # Simulation link objects
+**/_*_archive_*.so             # Archive library files
+**/rmar*.c                     # RMar files
+**/rmar*.h                     # RMar headers
+**/rmar*.o                     # RMar compiled
+**/rmar*.m                     # RMar map
+**/import_dpic.h               # DPI-C import headers
+**/build_db                    # Build database executables
 
 # Icarus Verilog Simulator
 a.out                          # Icarus compiled output
