@@ -1,5 +1,346 @@
-*.spef
-*.swp
-*.swo
-*.swn
-VsdRiscvScl180\synthesis\work_folder
+# RISC-V Reference SoC Tapeout Program – Phase 2
+# Comprehensive .gitignore for semiconductor design project
+# Ignores EDA tool outputs, simulation files, and temporary data
+
+################################################################################
+# SIMULATION TOOL OUTPUT FILES
+################################################################################
+
+# VCS Simulator (Synopsys)
+simv                           # Compiled simulator executable
+simv.daidir/                   # VCS simulator database
+csrc/                          # VCS C source compilation directory
+DVEfiles/                      # DVE (Waveform viewer) files
+*.vpd                          # VCS waveform database
+*.vcd                          # VCD waveform files
+*.fsdb                         # FSDB waveform database
+*.fsdb+/                       # FSDB+ directory
+ucli.key                       # VCS key file
+*.key                          # VCS license keys
+verdiLog/                      # Verdi debug logs
+novas.*/                       # Novas waveform viewer files
+
+# Icarus Verilog Simulator
+a.out                          # Icarus compiled output
+*.vvp                          # Icarus compiled simulation
+
+# Simulation logs and temporary files
+*.log                          # All log files from simulations
+simulation.log                 # Simulation execution log
+compile.log                    # Compilation log
+vcs_compile.log                # VCS compilation log
+vcs_compile_*.log              # VCS compilation variants
+turbo.log                      # VCS turbo log
+compiler.log                   # Compiler log
+flex*.log                      # FlexLM license logs
+lm_command.log                 # License manager command log
+
+# Waveform and coverage files
+coverage.vdb                   # Coverage database
+coverage/                      # Coverage report directory
+*.vdb                          # Value database
+urgReport/                     # URG (coverage reporting) output
+AN.DB                          # Coverage analysis database
+
+################################################################################
+# SYNTHESIS TOOL OUTPUT FILES
+################################################################################
+
+# Synopsys Design Compiler
+WORK/                          # DC work directory (cached)
+work/                          # Generic work directory
+*.syn                          # Synthesis intermediate files
+*.pvl                          # Parsed Verilog Library (DC cache)
+*.mr                           # Milkyway Reference (DC cache)
+*.db                           # Compiled libraries (can be large)
+default-*.svf                  # Flex License server files
+*.svf                          # Synopsys license files
+
+# Design Compiler output directories
+work_folder/                   # DC work folder
+
+# Synthesis reports (keep documentation, ignore tool files)
+*.sldb                         # Synopsys library database
+
+################################################################################
+# PHYSICAL DESIGN TOOL OUTPUT
+################################################################################
+
+# ICC2 and Synopsys PD Tools
+*.nlib/                        # ICC2 design library (NDM format - large)
+outputs/works/                 # ICC2 working directory
+icc2/outputs/works/            # Specific ICC2 outputs path
+
+# PD Tool generated files
+*.def                          # Design Exchange Format (large)
+*.spef                         # Standard Parasitic Exchange Format
+*.spef.spef_scenario           # SPEF scenario files
+*.gds                          # GDS layout (keep if it's source, ignore if generated)
+*.lef                          # Library Exchange Format (source - keep as needed)
+
+# ICC2 temporary files
+icc2_command.log               # ICC2 execution log
+icc2_output.txt                # ICC2 output summary
+icc2.rpt                       # ICC2 report
+icc2_workspace.log             # ICC2 workspace log
+
+# Place and Route cache/intermediate
+RM_*/                          # Synopsys RM directories
+rm_*/                          # RM lowercase variant
+
+################################################################################
+# LARGE GENERATED DATABASES AND LIBRARIES
+################################################################################
+
+# Pre-compiled libraries (tool-specific, regenerable)
+*.so                           # Compiled shared objects
+*.a                            # Compiled static libraries
+*.o                            # Object files
+objs/                          # Object file directory
+
+# Tool-specific cache directories
+.vscode/                       # VSCode workspace (include if collaborative, but IDE files generally ignored)
+.DS_Store                      # macOS system files
+__pycache__/                   # Python cache
+*.pyc                          # Python compiled files
+
+################################################################################
+# BACKUP AND TEMPORARY FILES
+################################################################################
+
+# Editor and IDE backups
+*.swp                          # Vim swap files
+*.swo                          # Vim backup files
+*.swn                          # Vim backup variant
+*~                             # Emacs backup files
+*.bak                          # Generic backup files
+*.orig                         # Original/merge conflict files
+.#*                            # Emacs lock files
+
+# System and OS files
+Thumbs.db                      # Windows thumbnail cache
+ehthumbs.db                    # Windows image cache
+
+################################################################################
+# DOCUMENTATION AND REPORT FILES (OPTIONAL - Adjust as needed)
+################################################################################
+
+# NOTE: These files are often useful to keep. Uncomment if you want to ignore them.
+# Keep these commented out unless you have space constraints or don't want reports in git.
+
+# *.rpt                        # Tool report files (uncomment to ignore)
+# *.txt                        # Text reports (uncomment to ignore, but may contain important data)
+# reports/                     # Report directories (uncomment to ignore)
+
+################################################################################
+# SCRIPT AND TOOL CONFIGURATION
+################################################################################
+
+# Do NOT ignore these - they're important for reproducibility:
+# TCL scripts (.tcl) - Keep
+# SDC constraints (.sdc) - Keep
+# Makefiles - Keep
+# Python scripts - Keep
+# Configuration files - Keep
+
+################################################################################
+# PROJECT-SPECIFIC PATTERNS
+################################################################################
+
+# VCS simulator working state
+*.vpd.gz                       # Compressed waveform
+*.vpd.tar                      # Archived waveform
+
+# Synopsys tool temporary
+tmp/                           # Temporary directories from tools
+temp/                          # Temporary directory
+*.tmp                          # Temporary files
+
+# License files (if tool-dependent)
+.synopsys_dc.setup             # DC setup (keep - it's configuration)
+
+# Large netlist variants that may be generated
+*_unplaced.v                   # Pre-placement netlist
+*_preroute.v                   # Pre-routing netlist
+
+# Parasitic and timing data (keep SPEF if needed for signoff)
+*.rcdb                         # RC database
+*.parasitics                   # Parasitic data files
+
+# Cadence tool outputs (if applicable)
+.cadence                       # Cadence tool directory
+innovus.log                    # Innovus log
+
+################################################################################
+# SPECIFIC PATHS (Task-based ignores)
+################################################################################
+
+# VCS simulation output across all tasks
+Task_*/vsdRiscvScl180/dv/*/simv
+Task_*/vsdRiscvScl180/dv/*/simv.daidir/
+Task_*/vsdRiscvScl180/dv/*/csrc/
+Task_*/vsdRiscvScl180/gls/simv
+Task_*/vsdRiscvScl180/gls/simv.daidir/
+Task_*/vsdRiscvScl180/gls/csrc/
+
+# Synthesis work directories
+Task_*/vsdRiscvScl180/synthesis/WORK/
+Task_*/vsdRiscvScl180/synthesis/work/
+Task_*/vsdRiscvScl180/synthesis/work_folder/
+
+# PD tool outputs
+Task_5/vsdRiscvScl180/pd/icc2/outputs/works/
+Task_6/vsdRiscvScl180/pd/icc2/outputs/works/
+Task_5/vsdRiscvScl180/pd/work/
+Task_6/vsdRiscvScl180/pd/work/
+
+# Log files in all tasks
+Task_*/vsdRiscvScl180/**/*.log
+Task_*/**/*.log
+
+################################################################################
+# LARGE FILES > 50MB (Git Size Limits)
+################################################################################
+# GitHub has a 100MB hard limit per file. These files are referenced in
+# README but too large for git. Access via shared drive link.
+# See: README.md sections on Physical Design Implementation and outputs
+#
+# DOCUMENTATION NOTE: These files are critical for PD flow but must be
+# accessed from shared storage rather than git repository.
+
+# Large post-route netlists (>50MB)
+**/raven_post_route_net.v            # Post-CTS netlist (~50-100MB)
+**/outputs/raven_post_route_net.v
+**/icc2/outputs/raven_post_route_net.v
+
+# Large parasitic extraction files (>100MB)
+**/final.spef.temp1_25.spef          # SPEF parasitic data (~250MB)
+**/final.spef.spef_scenario           # SPEF scenario files
+**/rc.spef.temp1_25.spef              # RC extraction files
+**/*.spef.temp*.spef                  # Temperature-variant SPEF files
+
+# Large SRAM library files (>50MB)
+**/sram_32_1024_freepdk45.lef         # SRAM macro LEF (~95MB)
+**/sram/sram_32_1024_freepdk45.lef
+
+# Large report files (>100MB)
+**/routing_net_physical.rpt           # Physical routing report (~150MB)
+**/standaloneFlow/routing_net_physical.rpt
+
+# Large ICC2 design databases (>50MB)
+**/design.ndm                         # ICC2 NDM database format
+**/design_label.init_dp/design.ndm
+**/design_label.post_route/design.ndm
+**/ORCA_TOP.nlib/                     # ICC2 full library database
+**/raven_wrapperNangate/              # ICC2 working directory
+**/output/raven_post_route_net.v      # Alternate location
+
+# Large workshop collateral files
+**/icc2_workshop_collaterals/parasitic/ *.spef
+**/icc2_workshop_collaterals/output/
+**/icc2_workshop_collaterals/standaloneFlow/work/
+
+################################################################################
+# NOTES ON SAFE DELETION
+################################################################################
+# 
+# These files/directories are safely deleted and can be regenerated:
+# 
+# ✓ simv, simv.daidir/    - VCS recompiles if needed
+# ✓ csrc/                 - Generated C code, recompiled
+# ✓ *.vcd, *.vpd, *.fsdb  - Waveforms, regeneratable
+# ✓ coverage.vdb          - Coverage database, regeneratable
+# ✓ WORK/, work/          - DC cache, regeneratable
+# ✓ *.syn, *.pvl          - DC compiled cache, regeneratable
+# ✓ *.nlib/               - ICC2 database, regeneratable (but large!)
+# ✓ *.log                 - Tool output logs, regeneratable
+#
+# IMPORTANT - Keep these in repository:
+#
+# ✗ *.v, *.sv             - Source code (RTL, testbenches)
+# ✗ *.tcl                 - Scripts and configuration
+# ✗ *.sdc                 - Timing constraints
+# ✗ *.lef, *.lib          - Technology and standard cell libraries
+# ✗ *.tf                  - Technology files
+# ✗ Makefiles             - Build automation
+# ✗ *.md, *.txt docs      - Documentation (unless explicitly ignored)
+# ✗ *.sdc, *.sdf, *.xml   - Design specifications and constraints
+
+################################################################################
+# LARGE FILES REFERENCED IN README - SHARED DRIVE ACCESS
+################################################################################
+#
+# The following files are referenced in the README files but are too large
+# for Git (GitHub 100MB hard limit). These files are REQUIRED for the
+# physical design flow and should be accessed from shared storage.
+#
+# FILE ACCESS INSTRUCTIONS:
+# 1. These files are stored on shared project drive (OneDrive/Google Drive)
+# 2. Access link should be provided in project documentation
+# 3. Download files to local workspace for tool execution
+# 4. Do NOT commit these files to git repository
+# 5. Keep .gitignore rules to prevent accidental commits
+#
+# FILES IGNORED DUE TO SIZE:
+#
+# Post-CTS Netlists (~99-103 MB):
+#   Location: Task_6/vsdRiscvScl180/pd/icc2/outputs/raven_post_route_net.v
+#   Referenced: README.md - "Post-CTS netlist with clock buffers"
+#   Used for: Post-route simulation, GDS generation
+#   Access: [SHARED DRIVE LINK]
+#
+# Parasitic Extraction Files (~261 MB total):
+#   Location: Task_6/vsdRiscvScl180/pd/icc2/outputs/final.spef.temp1_25.spef
+#   Referenced: README.md - "Parasitic extraction files for timing"
+#   Size: 261 MB (too large for git)
+#   Used for: PrimeTime timing signoff, post-route analysis
+#   Access: [SHARED DRIVE LINK]
+#
+# SRAM Memory Macro Library (~95 MB each):
+#   Location: Task_6/vsdRiscvScl180/pd/icc2_workshop_collaterals/sram/
+#   File: sram_32_1024_freepdk45.lef
+#   Referenced: README.md - "Memory macro specifications"
+#   Used for: Physical design floorplanning, macro placement
+#   Note: Multiple copies of this file exist (consolidate locally)
+#   Access: [SHARED DRIVE LINK]
+#
+# Physical Routing Reports (~152 MB):
+#   Location: Task_6/vsdRiscvScl180/pd/icc2/icc2_workshop_collaterals/
+#   File: standaloneFlow/routing_net_physical.rpt
+#   Referenced: README.md - "Detailed routing visualization"
+#   Used for: Design analysis, routing quality verification
+#   Access: [SHARED DRIVE LINK]
+#
+# ICC2 Design Databases (~74 MB each):
+#   Location: Task_6/vsdRiscvScl180/pd/icc2/icc2_workshop_collaterals/
+#   File: standaloneFlow/work/raven_wrapperNangate/.../*.ndm
+#   Referenced: README.md - "ICC2 design database with placement/CTS"
+#   Used for: ICC2 PD flow continuation, design state restoration
+#   Note: Regeneratable from scripts but requires 16+ hours
+#   Access: [SHARED DRIVE LINK]
+#
+# ACCESSING LARGE FILES:
+# 
+# Option 1: Download from shared drive (recommended for local work)
+#   - Faster local tool execution
+#   - No git conflicts
+#   - Can modify locally without affecting repository
+#
+# Option 2: Access from network drive (if available)
+#   - No local storage needed
+#   - May be slower than local copy
+#   - Useful for read-only reference
+#
+# Option 3: Regenerate from scripts (if time permits)
+#   - Run ICC2 flow: ~16 hours for complete PD
+#   - Run synthesis: ~4 hours for design compilation
+#   - Ensure tool licenses available
+#
+# IMPORTANT: 
+# These files are mentioned in README but NOT in git repository.
+# Tools will not find them if only cloned from git.
+# Always check for these files in shared drive first.
+
+################################################################################
+# END OF GITIGNORE
+################################################################################

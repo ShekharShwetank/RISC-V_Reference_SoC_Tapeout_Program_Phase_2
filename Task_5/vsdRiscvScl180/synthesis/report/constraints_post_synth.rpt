@@ -1,0 +1,22 @@
+Warning: Design 'vsdcaravel' has '1' unresolved references. For more detailed information, use the "link" command. (UID-341)
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : vsdcaravel
+Version: T-2022.03-SP5
+Date   : Thu Dec 25 15:57:34 2025
+****************************************
+
+
+   max_fanout
+
+                             Required        Actual
+   Net                        Fanout         Fanout          Slack
+   -----------------------------------------------------------------
+   clock                       18.00         260.00        -242.00  (VIOLATED)
+
+   -----------------------------------------------------------------
+   Total                      1                -242.00  
+
+1

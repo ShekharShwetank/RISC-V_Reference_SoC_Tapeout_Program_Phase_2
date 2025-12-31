@@ -1,0 +1,36 @@
+Warning: Design 'vsdcaravel' has '1' unresolved references. For more detailed information, use the "link" command. (UID-341)
+ 
+****************************************
+Report : area
+Design : vsdcaravel
+Version: T-2022.03-SP5
+Date   : Thu Dec 25 15:57:34 2025
+****************************************
+
+Library(s) Used:
+
+    tsl18fs120_scl_ff (File: /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/liberty/lib_flow_ff/tsl18fs120_scl_ff.db)
+    gtech (File: /home/Synopsys/tools/syn/T-2022.03-SP5/libraries/syn/gtech.db)
+    tsl18cio250_min (File: /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/liberty/tsl18cio250_min.db)
+
+Number of ports:                        10477
+Number of nets:                          2669
+Number of cells:                         1266
+Number of combinational cells:            278
+Number of sequential cells:               238
+Number of macros/black boxes:              38
+Number of buf/inv:                        133
+Number of references:                       2
+
+Combinational area:               3693.630014
+Buf/Inv area:                      959.309997
+Noncombinational area:           19343.409954
+Macro/Black Box area:            28600.001396
+Net Interconnect area:             284.255676
+
+Total cell area:                 51637.041364
+Total area:                      51921.297040
+
+Information: This design contains unmapped logic. (RPT-7)
+Information: This design contains black box (unknown) components. (RPT-8)
+1

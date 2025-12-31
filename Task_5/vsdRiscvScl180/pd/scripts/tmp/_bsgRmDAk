@@ -1,0 +1,10 @@
+set search_path {. .}
+setenv RUN_RESULT /home/dgoyal/vsdRiscvScl180/Floorplan/scripts/tmp/_rrHMMZJv
+set_current_mismatch_config auto_fix
+
+set_app_options -name lib.workspace.build_script -value CLIBs/.scripts/EXPLORE_physical_only.tcl
+#suppress_messages
+
+source -echo -verbose CLIBs/.scripts/EXPLORE_physical_only.tcl
+
+

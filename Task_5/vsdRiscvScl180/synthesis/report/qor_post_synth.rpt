@@ -1,0 +1,85 @@
+Warning: Design 'vsdcaravel' has '1' unresolved references. For more detailed information, use the "link" command. (UID-341)
+ 
+****************************************
+Report : qor
+Design : vsdcaravel
+Version: T-2022.03-SP5
+Date   : Thu Dec 25 15:57:34 2025
+****************************************
+
+
+  Timing Path Group (none)
+  -----------------------------------
+  Levels of Logic:               1.00
+  Critical Path Length:          0.00
+  Critical Path Slack:         uninit
+  Critical Path Clk Period:       n/a
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  -----------------------------------
+
+
+  Cell Count
+  -----------------------------------
+  Hierarchical Cell Count:         72
+  Hierarchical Port Count:      10414
+  Leaf Cell Count:                554
+  Buf/Inv Cell Count:             133
+  Buf Cell Count:                  24
+  Inv Cell Count:                 109
+  CT Buf/Inv Cell Count:            9
+  Combinational Cell Count:       378
+  Sequential Cell Count:          176
+  Macro Count:                      0
+  -----------------------------------
+
+
+  Area
+  -----------------------------------
+  Combinational Area:     3693.630014
+  Noncombinational Area: 19343.409954
+  Buf/Inv Area:            959.309997
+  Total Buffer Area:           288.42
+  Total Inverter Area:         670.89
+  Macro/Black Box Area:  28600.001396
+  Net Area:                284.255676
+  -----------------------------------
+  Cell Area:             51637.041364
+  Design Area:           51921.297040
+
+
+  Design Rules
+  -----------------------------------
+  Total Number of Nets:          3473
+  Nets With Violations:             1
+  Max Trans Violations:             0
+  Max Cap Violations:               0
+  Max Fanout Violations:            1
+  -----------------------------------
+
+
+  Hostname: nanodc.iitgn.ac.in
+
+  Compile CPU Statistics
+  -----------------------------------------
+  Resource Sharing:                   21.67
+  Logic Optimization:                 22.08
+  Mapping Optimization:                2.68
+  -----------------------------------------
+  Overall Compile Time:               55.36
+  Overall Compile Wall Clock Time:    56.01
+
+  --------------------------------------------------------------------
+
+  Design  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+
+  Design (Hold)  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+  --------------------------------------------------------------------
+
+
+1

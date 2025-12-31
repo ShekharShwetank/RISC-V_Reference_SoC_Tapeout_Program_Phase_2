@@ -1,0 +1,832 @@
+
+================================================================================
+HOUSEKEEPING MODULE COMPREHENSIVE ANALYSIS
+VSDCaravel - SCL180 Project
+================================================================================
+
+PART 1: HOUSEKEEPING.V - MAIN CONTROLLER MODULE
+================================================================================
+
+1. MODULE OVERVIEW
+------------------
+The housekeeping module is the CENTRAL CONTROL HUB for the entire Caravel chip,
+managing critical system functions that cannot be controlled by the management
+SoC itself. It bridges external SPI control with internal Wishbone bus access.
+
+Author: Tim Edwards (Efabless)
+Original: Sept 27, 2020 | Updated: Oct 13, 2021
+Lines of Code: ~1500 lines
+
+KEY RESPONSIBILITIES:
+- External SPI slave interface for chip configuration
+- Wishbone bus slave for management SoC access  
+- GPIO configuration and control (38 I/O pads)
+- PLL/clock configuration and trim
+- SPI flash passthrough and management
+- System reset and interrupt generation
+- Power monitoring and control
+
+
+2. MODULE INTERFACE (51,113 characters)
+------------------
+
+PARAMETERS:
+- GPIO_BASE_ADR = 32'h2600_0000  (GPIO config memory map)
+- SPI_BASE_ADR  = 32'h2610_0000  (SPI registers)
+- SYS_BASE_ADR  = 32'h2620_0000  (System monitoring)
+- IO_CTRL_BITS  = 13             (Per-GPIO config width)
+
+PORTS (Grouped by Function):
+
+A. Wishbone Slave Interface (Management SoC):
+   - wb_clk_i       : Wishbone clock input
+   - wb_rstn_i      : Wishbone reset (active low)
+   - wb_adr_i[31:0] : Address bus
+   - wb_dat_i[31:0] : Data input (write data)
+   - wb_dat_o[31:0] : Data output (read data)
+   - wb_sel_i[3:0]  : Byte select
+   - wb_we_i        : Write enable
+   - wb_cyc_i       : Cycle active
+   - wb_stb_i       : Strobe (transaction valid)
+   - wb_ack_o       : Acknowledge
+
+B. Clock/PLL Control Outputs:
+   - pll_ena        : PLL enable
+   - pll_dco_ena    : DCO (digitally controlled osc) enable
+   - pll_div[4:0]   : PLL divider (1-31)
+   - pll_sel[2:0]   : PLL input select
+   - pll90_sel[2:0] : 90° phase select
+   - pll_trim[25:0] : PLL frequency trim (26 bits!)
+   - pll_bypass     : Bypass PLL, use external clock
+
+C. SPI Flash Passthrough (Management Side):
+   - spimemio_flash_csb      : Chip select from mgmt SoC
+   - spimemio_flash_clk      : SPI clock from mgmt SoC
+   - spimemio_flash_io0_oeb  : Output enable (MOSI)
+   - spimemio_flash_io1_oeb  : Output enable (MISO)
+   - spimemio_flash_io2_oeb  : Output enable (WP#)
+   - spimemio_flash_io3_oeb  : Output enable (HOLD#)
+   - spimemio_flash_io[0-3]_do : Data outputs
+   - spimemio_flash_io[0-3]_di : Data inputs
+
+D. SPI Flash Passthrough (Padframe Side):
+   - pad_flash_csb       : To pad
+   - pad_flash_csb_oeb   : Output enable
+   - pad_flash_clk       : To pad
+   - pad_flash_clk_oeb   : Output enable
+   - pad_flash_io0_oeb   : MOSI output enable
+   - pad_flash_io1_oeb   : MISO output enable
+   - pad_flash_io0_ieb   : MOSI input enable
+   - pad_flash_io1_ieb   : MISO input enable
+   - pad_flash_io[0-1]_do : Data to pads
+   - pad_flash_io[0-1]_di : Data from pads
+
+E. GPIO Management (38 I/O):
+   - mgmt_gpio_in[`MPRJ_IO_PADS-1:0]  : GPIO inputs
+   - mgmt_gpio_out[`MPRJ_IO_PADS-1:0] : GPIO outputs
+   - mgmt_gpio_oeb[`MPRJ_IO_PADS-1:0] : GPIO output enables
+
+F. GPIO Serial Loader (Chain Programming):
+   - serial_clock   : Shift register clock
+   - serial_load    : Load pulse
+   - serial_resetn  : Reset (active low)
+   - serial_data_1  : Data for first chain
+   - serial_data_2  : Data for second chain
+
+G. System Control:
+   - rstn           : Main reset input
+   - reset          : Reset output (to mgmt SoC)
+   - irq[2:0]       : Interrupt outputs
+   - trap           : CPU trap state input
+   - user_clock     : User clock monitoring
+
+H. Module Enable Status (from SoC):
+   - qspi_enabled   : Quad SPI mode active
+   - uart_enabled   : UART active
+   - spi_enabled    : SPI master active
+   - debug_mode     : Debug mode active
+
+I. UART Passthrough:
+   - ser_tx : UART transmit from SoC
+   - ser_rx : UART receive to SoC
+
+J. SPI Master Passthrough:
+   - spi_sdi    : SPI data in
+   - spi_csb    : SPI chip select
+   - spi_sck    : SPI clock
+   - spi_sdo    : SPI data out
+   - spi_sdoenb : SPI data output enable
+
+K. Power/Voltage Monitoring:
+   - usr1_vcc_pwrgood : User area 1 VCC power good
+   - usr2_vcc_pwrgood : User area 2 VCC power good
+   - usr1_vdd_pwrgood : User area 1 VDD power good
+   - usr2_vdd_pwrgood : User area 2 VDD power good
+   - pwr_ctrl_out[`MPRJ_PWR_PADS-1:0] : Power control (reserved)
+
+L. Debug Interface:
+   - debug_in  : Debug signal to GPIO[0]
+   - debug_out : Debug signal from GPIO[0]
+   - debug_oeb : Debug output enable
+
+M. Optional SRAM Read-Only Port:
+   - sram_ro_clk      : SRAM clock
+   - sram_ro_csb      : Chip select
+   - sram_ro_addr[7:0]: Address
+   - sram_ro_data[31:0]: Read data
+
+
+3. INTERNAL ARCHITECTURE
+-------------------------
+
+A. DUAL ACCESS PATH:
+   The module supports TWO ways to access configuration registers:
+
+   (1) EXTERNAL SPI ACCESS (via housekeeping_spi submodule)
+       - 4-wire SPI: SCK, SDI, SDO, CSB
+       - Byte-oriented protocol
+       - Direct chip configuration without CPU
+
+   (2) WISHBONE BACKDOOR ACCESS (from management SoC)
+       - Memory-mapped registers
+       - 32-bit word access
+       - Requires state machine to translate to 8-bit SPI protocol
+
+B. STATE MACHINE: Wishbone Backdoor (wbbd_state)
+
+   States (4-bit encoding):
+   - WBBD_IDLE    (4'h0) : Waiting for Wishbone transaction
+   - WBBD_SETUP0  (4'h1) : Apply addr/data for byte 0
+   - WBBD_RW0     (4'h2) : Latch byte 0
+   - WBBD_SETUP1  (4'h3) : Apply addr/data for byte 1
+   - WBBD_RW1     (4'h4) : Latch byte 1
+   - WBBD_SETUP2  (4'h5) : Apply addr/data for byte 2
+   - WBBD_RW2     (4'h6) : Latch byte 2
+   - WBBD_SETUP3  (4'h7) : Apply addr/data for byte 3
+   - WBBD_RW3     (4'h8) : Latch byte 3
+   - WBBD_DONE    (4'h9) : Send ACK to Wishbone
+   - WBBD_RESET   (4'ha) : Clock once to reset transfer bit
+
+   OPERATION:
+   - Stalls CPU by holding wb_ack_o LOW until all 4 bytes transferred
+   - Translates 32-bit word address to 8-bit SPI address
+   - Handles endianness conversion
+
+
+4. REGISTER MAP (SPI Byte Addresses)
+-------------------------------------
+
+CRITICAL: All registers are BYTE-ADDRESSED for SPI protocol!
+
+0x00 : SPI Status (always 0x00)
+
+IDENTIFICATION (Read-Only):
+0x01 : Manufacturer ID [11:8]  (upper 4 bits)
+0x02 : Manufacturer ID [7:0]   (lower 8 bits)
+0x03 : Product ID [7:0]
+0x04-0x07 : Mask Revision [31:0] (User Project ID)
+
+PLL/CLOCK CONTROL:
+0x08 : {6'b0, pll_dco_ena, pll_ena}
+0x09 : {7'b0, pll_bypass}
+0x0a : {7'b0, irq_spi}
+0x0b : {7'b0, reset}
+0x0c : {7'b0, trap} (CPU trap state - READ ONLY)
+0x0d-0x10 : pll_trim[25:0] (4 bytes)
+0x11 : {2'b0, pll90_sel[2:0], pll_sel[2:0]}
+0x12 : {3'b0, pll_div[4:0]}
+
+GPIO SERIAL LOADER CONTROL:
+0x13 : {1'b0, serial_data_2, serial_data_1, serial_bb_clock,
+        serial_bb_load, serial_bb_resetn, serial_bb_enable, serial_busy}
+
+OPTIONAL SRAM READ-ONLY PORT:
+0x14 : {6'b0, sram_ro_clk, sram_ro_csb}
+0x15 : sram_ro_addr[7:0]
+0x16-0x19 : sram_ro_data[31:0] (4 bytes, READ ONLY)
+
+SYSTEM MONITORING:
+0x1a : {4'b0, usr1_vcc_pwrgood, usr2_vcc_pwrgood,
+              usr1_vdd_pwrgood, usr2_vdd_pwrgood}
+0x1b : {5'b0, clk1_output_dest, clk2_output_dest, trap_output_dest}
+0x1c : {6'b0, irq_2_inputsrc, irq_1_inputsrc}
+
+GPIO CONFIGURATION (38 GPIOs × 2 bytes each):
+0x1d-0x1e : gpio_configure[0][12:0]  (GPIO 0)
+0x1f-0x20 : gpio_configure[1][12:0]  (GPIO 1)
+...
+0x67-0x68 : gpio_configure[37][12:0] (GPIO 37)
+
+GPIO DATA (Read-Only):
+0x69-0x6d : mgmt_gpio_in[`MPRJ_IO_PADS-1:0] (5 bytes for 38 bits)
+
+POWER CONTROL:
+0x6e : {4'b0, pwr_ctrl_out[3:0]} (reserved)
+
+HOUSEKEEPING SPI DISABLE:
+0x6f : {7'b0, hkspi_disable}
+
+
+5. GPIO CONFIGURATION BITS (13 bits per GPIO)
+----------------------------------------------
+
+Each GPIO has a 13-bit configuration register:
+
+Bit [12]    : Management area select (0=user, 1=mgmt)
+Bit [11]    : Input disable
+Bit [10]    : Hold override
+Bit [9]     : Analog enable
+Bit [8]     : Analog bus select
+Bit [7]     : Analog polarity
+Bit [6]     : Slow slew rate
+Bit [5:3]   : Trip point select
+Bit [2:0]   : Drive strength / function select
+
+THESE BITS ARE SERIALLY LOADED into gpio_control_block instances!
+
+
+6. SPI FLASH PASSTHROUGH LOGIC
+-------------------------------
+
+The module implements SMART MULTIPLEXING of SPI flash signals:
+
+NORMAL MODE:
+- Management SoC controls flash via spimemio_* signals
+- Direct connection: mgmt SoC ↔ flash pads
+
+PASSTHROUGH MODES (detected by housekeeping_spi):
+
+A. MANAGEMENT PASSTHROUGH (pass_thru_mgmt):
+   - External SPI master controls management flash
+   - Command: 0xC4 (11000100)
+   - Routes: GPIO[2,3,4] → flash_io0, CSB, CLK
+   - Used for: Programming mgmt flash from external SPI
+
+B. USER PASSTHROUGH (pass_thru_user):
+   - External SPI master controls user flash
+   - Command: 0xC2 (11000010)
+   - Routes through user project area
+   - Used for: Programming user flash
+
+CRITICAL TIMING:
+- pass_thru_mgmt_delay: Delayed version for CSB/IO0 sync
+- pass_thru_mgmt_reset: Forces CPU into reset during passthrough
+
+
+7. WISHBONE BACKDOOR MECHANISM
+-------------------------------
+
+PROBLEM: SPI uses 8-bit byte protocol, Wishbone uses 32-bit words
+
+SOLUTION: State machine performs 4× 8-bit accesses per Wishbone word
+
+EXAMPLE READ (address 0x26100018 - Reset register):
+
+1. CPU: wb_adr_i = 0x26100018, wb_we_i = 0, wb_stb_i = 1
+2. Module detects spi_select (matches SPI_BASE_ADR)
+3. Translates to SPI addr 0x0b using spiaddr() function
+4. State machine:
+   - SETUP0: wbbd_addr = 0x0b, wbbd_sck toggles
+   - RW0:    Read byte 0 (LSB)
+   - SETUP1: wbbd_addr = 0x0b+1 (auto-increment)
+   - RW1:    Read byte 1
+   - SETUP2: wbbd_addr = 0x0b+2
+   - RW2:    Read byte 2
+   - SETUP3: wbbd_addr = 0x0b+3
+   - RW3:    Read byte 3 (MSB)
+   - DONE:   wb_ack_o = 1, wb_dat_o = {byte3, byte2, byte1, byte0}
+5. CPU continues execution
+
+WRITE OPERATION: Similar, but wbbd_write strobe pulses on each byte
+
+
+8. GPIO SERIAL LOADER OPERATION
+--------------------------------
+
+The GPIO pads are configured using a SHIFT-REGISTER CHAIN mechanism:
+
+MANUAL BIT-BANG MODE (serial_bb_enable = 1):
+- Software controls: serial_bb_clock, serial_bb_load, serial_bb_resetn
+- Software sets: serial_bb_data_1, serial_bb_data_2
+- Used for: Debug, initial config
+
+AUTOMATIC MODE (serial_xfer = 1):
+- Hardware shifts out all 38× 13-bit configs automatically
+- Sources data from gpio_configure[] registers
+- Asserts serial_busy during transfer
+- Used for: Fast GPIO reconfiguration
+
+CHAIN STRUCTURE:
+- 38 GPIOs × 13 bits = 494 total shift register bits
+- Split into 2 chains for faster loading
+- Chain 1: GPIOs 0-18 (serial_data_1)
+- Chain 2: GPIOs 19-37 (serial_data_2)
+
+
+9. CRITICAL DESIGN PATTERNS
+----------------------------
+
+A. CLOCK DOMAIN CROSSING:
+   - wb_clk_i (management SoC clock) ↔ SCK (external SPI clock)
+   - NO SYNCHRONIZERS! Relies on mutual exclusion:
+     * External SPI used when CPU in reset
+     * Wishbone used when CSB high (SPI inactive)
+
+B. RESET HANDLING:
+   - rstn: Primary reset input (replaces porb, rstb_h)
+   - reset_reg: Software-controllable reset output
+   - pass_thru_mgmt_reset: Forces reset during flash programming
+
+C. MUX HIERARCHY:
+   Signal combination: caddr = wbbd_addr when wb_busy, else oaddr (from SPI)
+                       cdata = wbbd_data when wb_busy, else odata
+                       cwstb = wbbd_write when wb_busy, else wrstb
+                       csclk = wbbd_sck when wb_busy, else SCK
+
+D. BUFFER INSTANTIATION:
+   (* keep *) attribute prevents synthesis optimization on clock buffers
+   Example: bufbd7 for pad_flash_clk to ensure proper drive strength
+
+
+10. INTER-MODULE CONNECTIONS
+-----------------------------
+
+INSTANTIATION:
+    housekeeping_spi hkspi (
+        .reset(rstn),
+        .SCK(SCK),           // From pad
+        .SDI(SDI),           // From pad
+        .CSB(CSB),           // From pad
+        .SDO(sdo),           // To pad (via mux)
+        .sdoenb(sdo_enb),
+        .idata(idata),       // Data to send (from fdata() function)
+        .odata(odata),       // Data received
+        .oaddr(oaddr),       // Address decoded
+        .rdstb(rdstb),       // Read strobe
+        .wrstb(wrstb),       // Write strobe
+        .pass_thru_mgmt(pass_thru_mgmt),
+        .pass_thru_mgmt_delay(pass_thru_mgmt_delay),
+        .pass_thru_user(pass_thru_user),
+        .pass_thru_user_delay(pass_thru_user_delay),
+        .pass_thru_mgmt_reset(pass_thru_mgmt_reset),
+        .pass_thru_user_reset(pass_thru_user_reset)
+    );
+
+
+================================================================================
+PART 2: HOUSEKEEPING_SPI.V - SPI PROTOCOL ENGINE
+================================================================================
+
+1. MODULE OVERVIEW
+------------------
+Implements the byte-oriented SPI slave protocol with pass-through capability.
+
+Lines of Code: ~260 lines
+Protocol: Custom 3-byte transaction (Command, Address, Data)
+
+
+2. SPI PROTOCOL SPECIFICATION
+------------------------------
+
+TRANSACTION FORMAT:
+  Byte 1: COMMAND [7:0]
+  Byte 2: ADDRESS [7:0] (register 0-255)
+  Byte 3+: DATA [7:0]   (one or more bytes)
+
+COMMAND BYTE ENCODING:
+  Bit [7]   : Write enable (1=write, 0=no write)
+  Bit [6]   : Read enable (1=read, 0=no read)
+  Bit [5:3] : Fixed byte count (0=stream, 1-7=terminate after N bytes)
+  Bit [2]   : Pass-through user flash (1=enable)
+  Bit [1]   : Pass-through mgmt flash (1=enable)
+  Bit [0]   : Reserved
+
+COMMAND EXAMPLES:
+  0x00 (00000000) : No operation
+  0x80 (10000000) : Write streaming (until CSB↑)
+  0x40 (01000000) : Read streaming (until CSB↑)
+  0xC0 (11000000) : Simultaneous read/write streaming
+  0xC4 (11000100) : Pass-through to mgmt flash
+  0xC2 (11000010) : Pass-through to user flash
+  0x88 (10001000) : Write 1 byte then terminate
+  0xC8 (11001000) : Read/write 1 byte then terminate
+
+
+3. STATE MACHINE
+----------------
+
+States (3-bit encoding):
+  `COMMAND  (3'b000) : Receiving command byte
+  `ADDRESS  (3'b001) : Receiving address byte
+  `DATA     (3'b010) : Receiving/sending data bytes
+  `MGMTPASS (3'b101) : Pass-through to mgmt flash
+  `USERPASS (3'b100) : Pass-through to user flash
+
+OPERATION:
+
+COMMAND State (8 SCK cycles):
+  count[0] : Capture writemode ← SDI
+  count[1] : Capture readmode ← SDI
+  count[2-4] : Capture fixed[2:0] ← SDI (byte count)
+  count[5] : Capture pre_pass_thru_mgmt ← SDI
+  count[6] : Capture pre_pass_thru_user ← SDI
+            Set pass_thru_mgmt_delay ← pre_pass_thru_mgmt
+  count[7] : Set pass_thru_user_delay ← pre_pass_thru_user
+            Transition to ADDRESS or *PASS state
+
+ADDRESS State (8 SCK cycles):
+  count[0-7] : Shift in address bits
+            addr ← {addr[6:0], SDI}
+  count[7] : Transition to DATA state
+            If readmode, assert rdstb
+
+DATA State (8 SCK cycles per byte):
+  RX: predata ← {predata[6:0], SDI}
+  TX: ldata ← {ldata[6:0], 1'b0} (shift left)
+  count[7] : Complete byte
+    - Auto-increment address
+    - Decrement fixed counter (if not streaming)
+    - Return to COMMAND if fixed=1
+    - Assert rdstb if readmode
+
+
+4. TIMING DIAGRAMS
+------------------
+
+WRITE TRANSACTION (Command 0x80, Addr 0x08, Data 0x03):
+
+   CSB  ‾‾|_____________________________________________________|‾‾‾
+
+   SCK  __|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_
+
+   SDI  --|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|1|X|X|X|X|X|X
+           \_____CMD=0x80_____/ \____ADDR=0x08____/ \___DATA=0x03___/
+
+   state  COMMAND → → → → → → → → ADDRESS → → → → → → → DATA → → → → 
+
+   wrstb  ___________________________________________________________|‾|_
+                                                          (at count=7)
+
+READ TRANSACTION (Command 0x40, Addr 0x03, Data read):
+
+   CSB  ‾‾|_____________________________________________________|‾‾‾
+
+   SCK  __|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_
+
+   SDI  --|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|1|X|X|X|X|X|X|X|X|X|X|X|X|X|X
+           \____CMD=0x40______/ \____ADDR=0x03____/
+
+   SDO  --|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|Z|D7|D6|D5|D4|D3|D2|D1|D0|
+                                               \___Product_ID___/
+
+   rdstb  ______________________________________________|‾|___________
+                                             (at ADDRESS count=7)
+
+
+5. CRITICAL TIMING DETAILS
+---------------------------
+
+A. DUAL-EDGE OPERATION:
+   - POSEDGE SCK: Capture SDI, update state machine
+   - NEGEDGE SCK: Update SDO, assert wrstb
+
+B. READ STROBE (rdstb):
+   - Asserted at END of address byte (count=7 in ADDRESS state)
+   - Tells housekeeping.v to latch idata for transmission
+   - idata loaded into ldata on NEXT byte (count=0 in DATA state)
+
+C. WRITE STROBE (wrstb):
+   - Asserted on NEGEDGE at count=7 in DATA state
+   - Captured on POSEDGE of LAST data bit
+   - Ensures setup time before byte complete
+
+D. OUTPUT ENABLE (sdoenb):
+   - Active LOW (0 = drive SDO)
+   - Enabled in DATA state ONLY if readmode=1
+   - Tri-stated in COMMAND, ADDRESS, and write-only modes
+
+
+6. PASS-THROUGH MECHANISM
+--------------------------
+
+When pass_thru_mgmt or pass_thru_user asserted:
+- State machine stays in MGMTPASS/USERPASS
+- All subsequent SPI traffic bypasses protocol engine
+- SDO directly driven (sdoenb=0)
+- External SPI master talks directly to flash
+
+DELAYED SIGNALS:
+- pass_thru_mgmt_delay: 1-cycle delayed version
+- Used for CSB routing to prevent glitches
+
+RESET SIGNALS:
+- pass_thru_mgmt_reset = pass_thru_mgmt_delay | pre_pass_thru_mgmt
+- Forces mgmt SoC into reset during flash programming
+
+
+7. DATA FLOW
+------------
+
+READ PATH:
+  1. rdstb pulses → housekeeping.v executes idata = fdata(addr)
+  2. On negedge SCK, count=0: ldata ← idata
+  3. On each negedge: SDO ← ldata[7], ldata ← {ldata[6:0], 1'b0}
+
+WRITE PATH:
+  1. On each posedge: predata ← {predata[6:0], SDI}
+  2. At count=7: odata = {predata[6:0], SDI}
+  3. On negedge: wrstb pulses
+  4. housekeeping.v captures odata
+
+
+================================================================================
+PART 3: SPIFLASH.V - SIMULATION MODEL
+================================================================================
+
+1. MODULE OVERVIEW
+------------------
+Behavioral simulation model of a 16MB (128Mbit) SPI flash memory.
+NOT synthesizable - used only for testbench verification.
+
+Author: Clifford Wolf (PicoSoC)
+Memory Size: 16 MB (0 to 16*1024*1024-1)
+
+
+2. SUPPORTED SPI FLASH COMMANDS
+--------------------------------
+
+Command 0x03: Standard Read
+  - Single SPI mode
+  - Format: 0x03 + 3 addr bytes + data stream
+  - Reads sequential bytes from memory[spi_addr]
+
+Command 0xAB: Release Power-Down
+  - Sets powered_up = 1
+  - Required before any read operation
+
+Command 0xB9: Power-Down
+  - Sets powered_up = 0
+  - Disables all read commands
+
+Command 0xFF: Reset / Exit XIP
+  - Clears xip_cmd
+  - Returns to normal SPI mode
+
+Command 0xBB: Dual I/O Read
+  - Dual SPI (2-bit) mode for address and data
+  - Format: 0xBB + 3 addr bytes + mode byte + data
+  - If mode byte = 0xA5, enables XIP continuous read
+
+Command 0xEB: Quad I/O Read
+  - Quad SPI (4-bit) mode for address and data
+  - Format: 0xEB + 3 addr bytes + mode byte + latency + data
+  - If mode byte = 0xA5, enables XIP continuous read
+
+Command 0xED: Quad I/O DDR Read
+  - Quad SPI with double data rate (both clock edges)
+  - Format: 0xED + 3 addr bytes + mode byte + latency + data
+  - If mode byte = 0xA5, enables XIP continuous read
+
+
+3. XIP (EXECUTE-IN-PLACE) MODE
+-------------------------------
+
+When enabled (mode byte = 0xA5 after 0xBB/EB/ED):
+- Subsequent transactions skip command byte
+- CSB↓ directly starts address phase
+- Saves 8 clock cycles per read
+
+EXIT XIP:
+- Method 1: Send 0xFF command
+- Method 2: MBR (Mode Bit Reset) - hold io0=1 for 8 cycles with CSB high
+
+
+4. OPERATING MODES
+------------------
+
+mode_spi (1):
+  - Standard SPI, 1-bit I/O
+  - io0 = MOSI (input), io1 = MISO (output)
+
+mode_dspi_rd (2):
+  - Dual SPI read phase
+  - io0, io1 = inputs (2 bits/cycle)
+
+mode_dspi_wr (3):
+  - Dual SPI write phase
+  - io0, io1 = outputs (2 bits/cycle)
+
+mode_qspi_rd (4):
+  - Quad SPI read phase
+  - io0-3 = inputs (4 bits/cycle)
+
+mode_qspi_wr (5):
+  - Quad SPI write phase
+  - io0-3 = outputs (4 bits/cycle)
+
+mode_qspi_ddr_rd (6):
+  - Quad DDR read
+  - Sample on BOTH posedge and negedge (8 bits/cycle)
+
+mode_qspi_ddr_wr (7):
+  - Quad DDR write
+  - Update on BOTH edges (8 bits/cycle)
+
+
+5. MEMORY INITIALIZATION
+-------------------------
+
+initial block:
+  - Loads hex file from FILENAME parameter
+  - Uses $readmemh(FILENAME, memory)
+  - Prints first 5 bytes for verification
+
+USAGE IN TESTBENCH:
+  spiflash #(
+    .FILENAME("firmware.hex")
+  ) flash_inst (
+    .csb(flash_csb),
+    .clk(flash_clk),
+    .io0(flash_io0),
+    .io1(flash_io1),
+    .io2(flash_io2),
+    .io3(flash_io3)
+  );
+
+
+6. TIMING MODEL
+---------------
+
+CRITICAL: All I/O delayed by #1 ns
+
+io0_delayed = #1 io0;  // Sample 1ns before posedge SCK
+io0 = #1 io0_oe ? io0_dout : 1'bz;  // Update 1ns after negedge SCK
+
+LATENCY: 8 dummy cycles (parameter latency = 8)
+  - After mode byte in Quad I/O Read
+  - dummycount decrements each cycle
+
+
+================================================================================
+PART 4: INTEGRATION & USAGE GUIDE
+================================================================================
+
+1. TYPICAL BOOT SEQUENCE
+-------------------------
+
+POWER-ON:
+  1. rstn asserted (chip held in reset)
+  2. External SPI master sends command to housekeeping SPI
+  3. Configures PLL trim, divider, enables
+  4. Loads GPIO configuration (38× 13-bit configs)
+  5. Sets mask_rev (user project ID)
+  6. De-asserts reset (write 0 to register 0x0b)
+
+MANAGEMENT SOC BOOTS:
+  1. CPU fetches from SPI flash (XIP mode at 0x10000000)
+  2. Firmware reads housekeeping registers via Wishbone
+  3. Can reconfigure GPIOs, PLL on-the-fly
+  4. Monitors power good signals, trap state
+
+
+2. FLASH PROGRAMMING PROCEDURE
+-------------------------------
+
+PROGRAM MANAGEMENT FLASH (via housekeeping SPI):
+  1. Send command 0xC4 (pass_thru_mgmt)
+  2. Subsequent SPI traffic routed to management flash
+  3. Send flash programming commands (e.g., Page Program 0x02)
+  4. Raise CSB to exit passthrough mode
+
+PROGRAM FROM MANAGEMENT SOC:
+  1. CPU writes to flash via spimemio Wishbone interface
+  2. Flash controller in mgmt_core.v handles protocol
+
+
+3. GPIO CONFIGURATION EXAMPLE
+------------------------------
+
+Configure GPIO[5] as management output, 4mA drive:
+
+VIA SPI:
+  Command: 0x80 (write stream)
+  Address: 0x27 (gpio_configure[5] high byte)
+  Data[0]: 0x10 (bit [12]=1, management select)
+  Address: 0x28 (gpio_configure[5] low byte)
+  Data[1]: 0x04 (drive strength = 4)
+
+VIA WISHBONE:
+  Address: 0x26000014 (GPIO_BASE + 5*4)
+  Data: 0x1004
+  Write strobe
+
+
+4. MEMORY MAP (From Management SoC)
+------------------------------------
+
+0x2600_0000 - 0x2600_009F : GPIO Configuration
+  0x2600_0000 : GPIO[0] control
+  0x2600_0004 : GPIO[1] control
+  ...
+  0x2600_009C : GPIO[37] control
+
+0x2610_0000 - 0x2610_006F : SPI/System Registers
+  0x2610_0004 : Product ID
+  0x2610_0005 : Manufacturer ID (low)
+  0x2610_0006 : Manufacturer ID (high)
+  0x2610_0008-0x0B : User Project ID
+  0x2610_000C : PLL enables
+  0x2610_0010 : PLL bypass
+  0x2610_0014 : IRQ
+  0x2610_0018 : Reset
+  0x2610_001C-0x1F : PLL trim
+  0x2610_0020 : PLL source
+  0x2610_0024 : PLL divider
+
+0x2620_0000 - 0x2620_000F : System Monitoring
+  0x2620_0000 : Power good status
+  0x2620_0004 : Output redirects
+  0x2620_000C : Input redirects
+
+
+5. VERIFICATION CHECKLIST
+--------------------------
+
+□ SPI protocol timing (setup/hold on SDI relative to SCK)
+□ Wishbone backdoor byte ordering (endianness)
+□ GPIO serial loader chain integrity
+□ Flash passthrough mode entry/exit
+□ PLL lock time after configuration
+□ Reset de-assertion sequence
+□ IRQ assertion from external SPI
+□ Power good signal propagation
+□ Trap state readback accuracy
+
+
+6. COMMON PITFALLS
+------------------
+
+ERROR: GPIO not responding
+FIX: Ensure serial loader executed after changing gpio_configure[]
+
+ERROR: Flash read returns 0xFF
+FIX: Check powered_up flag, send 0xAB command first
+
+ERROR: Wishbone hangs
+FIX: Backdoor state machine requires CSB=1 (SPI inactive)
+
+ERROR: PLL won't lock
+FIX: Verify trim value in valid range, check bypass=0
+
+ERROR: Reset stuck low
+FIX: Check pass_thru_mgmt_reset not asserted
+
+
+================================================================================
+PART 5: CRITICAL SPECIFICATIONS
+================================================================================
+
+1. TIMING REQUIREMENTS
+-----------------------
+
+SPI Clock (SCK):
+  - Max frequency: 25 MHz
+  - Setup time (SDI): 5 ns before posedge SCK
+  - Hold time (SDI): 5 ns after posedge SCK
+  - SDO valid: 10 ns after negedge SCK
+
+Wishbone Clock (wb_clk_i):
+  - Recommended: 10-50 MHz
+  - Must be stable when SPI inactive
+
+GPIO Serial Loader:
+  - serial_clock max: 10 MHz
+  - Data setup: 5 ns before posedge serial_clock
+
+
+2. RESOURCE UTILIZATION (Estimated)
+------------------------------------
+
+housekeeping.v:
+  - Registers: ~600
+  - Combinational logic: ~2000 gates
+  - Memory: 38× 13-bit registers (494 bits)
+
+housekeeping_spi.v:
+  - Registers: ~50
+  - Combinational logic: ~200 gates
+
+TOTAL: ~2200 gates, 650 FFs
+
+
+3. POWER CONSUMPTION (Estimated)
+---------------------------------
+
+Static (SPI idle, Wishbone idle): ~50 μW @ 1.8V
+Dynamic (SPI active @ 10 MHz): ~500 μW
+Dynamic (Wishbone @ 25 MHz): ~800 μW
+
+
+================================================================================
+END OF ANALYSIS
+================================================================================
