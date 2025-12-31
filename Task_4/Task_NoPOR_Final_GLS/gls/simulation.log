@@ -1,10 +1,10 @@
 Command: /home/sshekhar/vsdRiscvScl180/gls/./simv +vcs+dumpvars+hkspi.vcd -l simulation.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version U-2023.03_Full64; Runtime version U-2023.03_Full64;  Dec 16 15:26 2025
+Compiler version U-2023.03_Full64; Runtime version U-2023.03_Full64;  Dec 23 20:04 2025
 Reading hkspi.hex
 hkspi.hex loaded into memory
-Memory 5 bytes = 0x93 0x00 0x00 0x00 0x93
+Memory 5 bytes = 0x81 0x40 0x81 0x41 0x01
 Read data = 0x11 (should be 0x11)
 Read register 0 = 0x00 (should be 0x00)
 Read register 1 = 0x04 (should be 0x04)
@@ -30,5 +30,5 @@ $finish called from file "hkspi_tb.v", line 365.
 $finish at simulation time             52410000
            V C S   S i m u l a t i o n   R e p o r t 
 Time: 52410000 ps
-CPU Time:      0.140 seconds;       Data structure size:   0.6Mb
-Tue Dec 16 15:26:31 2025
+CPU Time:      0.460 seconds;       Data structure size:   0.6Mb
+Tue Dec 23 20:04:47 2025

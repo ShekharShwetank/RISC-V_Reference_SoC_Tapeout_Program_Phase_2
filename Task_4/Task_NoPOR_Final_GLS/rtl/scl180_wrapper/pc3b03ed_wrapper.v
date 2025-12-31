@@ -32,7 +32,7 @@
 
 
 
-`include "pc3b03ed.v"
+//`include "pc3b03ed.v"
 module pc3b03ed_wrapper(OUT, PAD, IN, INPUT_DIS, OUT_EN_N, dm);
 output  IN;
 input   OUT, INPUT_DIS, OUT_EN_N;

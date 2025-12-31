@@ -261,11 +261,10 @@ simv
 /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model
 ../rtl/defines.v
 hkspi_tb.v
-98
-XDG_SESSION_ID=1001
+94
+XDG_SESSION_ID=2275
 XDG_RUNTIME_DIR=/run/user/1004
 XDG_DATA_DIRS=/home/sshekhar/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-VTE_VERSION=5204
 VMR_MODE_FLAG=64
 VENDOR=unknown
 VCS_PATHMAP_PRELOAD_DONE=1
@@ -284,8 +283,8 @@ SYN_HOME=/home/Synopsys/tools/syn/T-2022.03-SP5
 SYNOPSYS_HOME=/home/Synopsys/tools
 STARRC_HOME=/home/Synopsys/tools/starrc/U-2022.12-SP3
 SSH_TTY=/dev/pts/6
-SSH_CONNECTION=10.0.178.37 64347 10.0.117.148 22
-SSH_CLIENT=10.0.178.37 64347 22
+SSH_CONNECTION=10.0.178.37 60196 10.0.117.148 22
+SSH_CLIENT=10.0.178.37 60196 22
 SNPS_VERDI_INTERNAL_LP_XML_NEW_FLOW=1
 SNPS_VCS_CLANG_PATH=/home/Synopsys/tools/vcs/U-2023.03/linux64/clang
 SNPS_TEMP=tmp
@@ -300,7 +299,7 @@ RSS_USERWARE=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk
 RSS_MODEL_LIB=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE/mgclibs
 RFCAD_CDS=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE
 RFCAD_ADS=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE
-REMOTEHOST=localhost
+REMOTEHOST=10.0.178.37
 RDS_TECH=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE/techs
 RDS_ROOT_DEFAULT=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE
 RDS_ROOT=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE
@@ -347,11 +346,8 @@ ICC2_HOME=/home/Synopsys/tools/icc2/U-2022.12-SP3
 HOSTTYPE=x86_64-linux
 HISTCONTROL=ignoredups
 GROUP=sshekhar
-GNOME_TERMINAL_SERVICE=:1.8
-GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/63274f57_1b11_48f5_a297_f25e0f3995ec
 FLEXLM_DIAGNOSTICS=3
 CWB_GL1_YES=1
-COLORTERM=truecolor
 CLS_CDSD_COMPATIBILITY_LOCKING=No
 CDS_TECH=b25m
 CDS_SEARCHDIR=/home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/pdk/cdns/sclpdk_v3/HOTCODE/amslibs/cds_default/cdsware
@@ -364,32 +360,32 @@ ALTOS_QUEUE=1
 5
 441241366 /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model
 524594064 /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/iopad/cio250/4M1L/verilog/tsl18cio250/zero
-50763305 ../rtl
-50763305 ../rtl
-647621689 ../rtl/scl180_wrapper
+257457024 ../rtl
+257457024 ../rtl
+0 ../rtl/scl180_wrapper
 56
 1765373386 /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/4M1IL/verilog/vcs_sim_model/buffd7.v
 1765383650 ../rtl/empty_macro.v
 1765383650 ../rtl/manual_power_connections.v
 1765383650 ../rtl/mprj_io_buffer.v
-1765878691 ../rtl/caravel_core.v
+1766499210 ../rtl/caravel_core.v
 1765383650 ../rtl/user_id_textblock.v
 1765383650 ../rtl/open_source.v
 1765383650 ../rtl/caravel_motto.v
 1765383650 ../rtl/caravel_logo.v
 1765383650 ../rtl/copyright_block.v
-1765878810 ../rtl/vsdcaravel.v
+1766499174 ../rtl/vsdcaravel.v
 1765373379 /home/Synopsys/pdk/SCL_PDK_3/SCLPDK_V3.0_KIT/scl180/stdcell/fs120/6M1L/verilog/vcs_sim_model/tsl18fs120_scl.v
 1765383650 ../rtl/ring_osc2x13.v
 1765372894 ../rtl/pc3d21.v
-1765870740 ../rtl/mprj_io.v
+1766497835 ../rtl/mprj_io.v
 1765383650 ../rtl/mgmt_protect_hv.v
 1765383650 ../rtl/housekeeping_spi.v
 1765383650 ../rtl/dummy_scl180_conb_1.v
 1765383650 ../rtl/digital_pll_controller.v
-1765878635 ../rtl/clock_div.v
+1766495667 ../rtl/clock_div.v
 1765372894 ../rtl/scl180_wrapper/pt3b02.v
-1765808283 ../rtl/scl180_wrapper/pt3b02_wrapper.v
+1765952668 ../rtl/scl180_wrapper/pt3b02_wrapper.v
 1765372894 ../rtl/scl180_wrapper/pc3d01.v
 1765808277 ../rtl/scl180_wrapper/pc3d01_wrapper.v
 1765372894 ../rtl/scl180_wrapper/pc3b03ed.v
@@ -404,7 +400,7 @@ ALTOS_QUEUE=1
 1765383650 ../rtl/mgmt_core.v
 1765383650 ../rtl/mgmt_core_wrapper.v
 1765383650 ../rtl/spare_logic_block.v
-1765383650 ../rtl/xres_buf.v
+1765950680 ../rtl/xres_buf.v
 1765383650 ../rtl/gpio_logic_high.v
 1765383650 ../rtl/gpio_defaults_block.v
 1765383650 ../rtl/scl180_macro_sparecell.v
@@ -413,14 +409,14 @@ ALTOS_QUEUE=1
 1765383650 ../rtl/mgmt_protect.v
 1765383650 ../rtl/mprj2_logic_high.v
 1765383650 ../rtl/mprj_logic_high.v
-1765872110 ../rtl/housekeeping.v
-1765878767 ../rtl/chip_io.v
+1766498122 ../rtl/housekeeping.v
+1766497885 ../rtl/chip_io.v
 1765383650 ../rtl/user_id_programming.v
-1765878718 ../rtl/caravel_clocking.v
+1766497276 ../rtl/caravel_clocking.v
 1765878792 ../rtl/digital_pll.v
-1765383650 ../rtl/pads.v
-1765807691 ../rtl/user_defines.v
-1765870821 ../rtl/caravel_netlists.v
+1765954601 ../rtl/pads.v
+1765959994 ../rtl/user_defines.v
+1766492869 ../rtl/caravel_netlists.v
 1765878979 hkspi_tb.v
 1765806225 ../rtl/defines.v
 1677384340 /home/Synopsys/tools/vcs/U-2023.03/linux64/lib/vcsdp_lite.tab
@@ -429,5 +425,5 @@ ALTOS_QUEUE=1
 1677385060 /home/Synopsys/tools/vcs/U-2023.03/linux64/lib/liberrorinf.so
 1677385018 /home/Synopsys/tools/vcs/U-2023.03/linux64/lib/libsnpsmalloc.so
 1677385055 /home/Synopsys/tools/vcs/U-2023.03/linux64/lib/libvfs.so
-1765878990 simv.daidir
+1766500484 simv.daidir
 -1 partitionlib
