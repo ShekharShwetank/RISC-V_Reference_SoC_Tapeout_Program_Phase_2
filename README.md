@@ -1,4 +1,4 @@
-# RISC-V Reference SoC Tapeout Program – Phase 2 Repository
+# RISC-V Reference SoC Design and Tapeout Program – Phase 2 Repository
 
 ![certificate](Reference/certificate.png)
 
