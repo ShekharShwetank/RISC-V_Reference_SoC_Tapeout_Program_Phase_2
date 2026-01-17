@@ -25,6 +25,8 @@
 
 This repository represents a **comprehensive, production-grade implementation of the RISC-V Reference SoC Tapeout Program – Phase 2**, demonstrating enterprise-level semiconductor design capabilities rarely seen in academic environments. The work establishes industry-standard ASIC methodologies spanning from architectural analysis through physical design implementation, serving as both a functional tapeout deliverable and an educational case study in modern SoC design practices.
 
+- Checkout Phase 1 [here](https://github.com/ShekharShwetank/RISC-V_Reference_SoC_Tapeout_Program_IIT_Gandhinagar_Submission.git)
+
 ### Significance
 
 This project transcends typical academic tapeout efforts by implementing:
